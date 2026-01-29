@@ -8,7 +8,6 @@
     :root{
       --bg: #0b0f19;
       --panel: #121a2a;
-      --panel2:#0f1624;
       --text:#e7eefc;
       --muted:#a9b6d3;
       --border: rgba(255,255,255,.10);
@@ -16,8 +15,6 @@
       --accent: #7aa2ff;
       --accent2:#2ee59d;
       --danger:#ff6b6b;
-      --warn:#ffd166;
-      --ok:#2ee59d;
       --radius: 16px;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
@@ -72,6 +69,7 @@
     }
     button:hover{background: rgba(255,255,255,.07)}
     button:active{transform: translateY(1px)}
+    button[disabled]{opacity:.55; cursor:not-allowed}
     .primary{
       border-color: rgba(122,162,255,.45);
       background: rgba(122,162,255,.14);
@@ -87,7 +85,7 @@
       display:grid;
       grid-template-columns: 420px 1fr;
       gap:16px;
-      padding:16px 18px 100px; /* extra for bottom bar */
+      padding:16px 18px 120px; /* extra for bottom bar */
       max-width:1200px;
       margin:0 auto;
     }
@@ -120,7 +118,7 @@
       font-family: var(--mono);
     }
     .card .bd{padding:14px}
-    .row{display:flex;gap:10px}
+    .row{display:flex;gap:10px; align-items:center}
     .row > *{flex:1}
 
     label{
@@ -129,7 +127,7 @@
       color:var(--muted);
       margin:10px 0 6px;
     }
-    input[type="text"], input[type="url"], textarea, select{
+    input[type="text"], input[type="url"], input[type="file"], textarea, select{
       width:100%;
       border:1px solid var(--border);
       background: rgba(255,255,255,.03);
@@ -139,6 +137,7 @@
       outline:none;
       font-size:13px;
     }
+    input[type="file"]{padding:8px 10px}
     textarea{min-height:90px; resize: vertical; line-height:1.4}
     .hint{margin-top:6px;font-size:11px;color: rgba(169,182,211,.85);}
     .pillrow{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
@@ -194,7 +193,7 @@
       color: var(--text);
       font-size: 12px;
       display:none;
-      z-index: 10;
+      z-index: 30;
     }
 
     .brandPreview{
@@ -228,6 +227,23 @@
     }
     .swatch .txt{font-size:12px;color:var(--muted);font-family:var(--mono)}
 
+    /* Palette chips */
+    .chipRow{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+    .chip{
+      display:flex; align-items:center; gap:8px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      color:var(--text);
+      cursor:pointer;
+      user-select:none;
+    }
+    .chip .c{
+      width:14px;height:14px;border-radius:4px;border:1px solid rgba(255,255,255,.22)
+    }
+
     /* Examples grid */
     .exampleGrid{
       display:grid;
@@ -260,9 +276,7 @@
       font-weight: 850;
       line-height: 1.15;
     }
-    .exampleCard .meta{
-      padding:12px;
-    }
+    .exampleCard .meta{padding:12px;}
     .exampleCard .meta .t{
       font-family: var(--mono);
       color: var(--muted);
@@ -284,7 +298,7 @@
       background: rgba(11,15,25,.78);
       border-top:1px solid var(--border);
       backdrop-filter: blur(12px);
-      z-index: 20;
+      z-index: 25;
     }
     .bottomBar .inner{
       max-width: 1200px;
@@ -312,9 +326,9 @@
       <div class="title">
         <div>
           <h1>IG + TikTok Marketing Webtool</h1>
-          <div class="sub">Scans brand colours (via URL proxy), generates example creatives, and outputs a simplified social plan.</div>
+          <div class="sub">Extract palette from an uploaded screenshot/logo (no proxy), generate example creatives, and output a simplified social plan.</div>
         </div>
-        <div class="badge">v1.1 • local + optional proxy</div>
+        <div class="badge">v1.2 • no proxy</div>
       </div>
       <div class="actions">
         <button class="ghost" id="btnLoad">Load sample</button>
@@ -336,15 +350,21 @@
         <div class="badge" id="savedState">Not saved</div>
       </div>
       <div class="bd">
-        <label>Website URL (reference + colour scan)</label>
+        <label>Website URL (reference point)</label>
         <input id="siteUrl" type="url" placeholder="https://yourproduct.com" />
+
+        <label>Palette source (recommended: homepage screenshot / logo)</label>
         <div class="row">
-          <button class="ghost" id="btnScanPalette">Scan URL colours</button>
-          <div class="badge" id="paletteStatus">Palette: not scanned</div>
+          <input id="paletteFile" type="file" accept="image/*" />
+          <button class="ghost" id="btnExtractPalette">Extract palette</button>
         </div>
-        <div class="hint">
-          Browser-only scraping is blocked by CORS. This button expects a small backend/proxy endpoint (included below) that fetches the page and extracts colours.
+        <div class="row" style="margin-top:10px">
+          <div class="badge" id="paletteStatus">Palette: manual</div>
+          <button class="ghost" id="btnClearPalette">Clear extracted palette</button>
         </div>
+        <div class="hint">This runs locally. Upload an image (screenshot/hero/logo). Then click “Extract palette”.</div>
+
+        <div class="chipRow" id="paletteChips" style="display:none"></div>
 
         <label>Product name</label>
         <input id="productName" type="text" placeholder="StatusMorning / OneMore / etc." />
@@ -358,7 +378,7 @@
         <label>Proof / credibility (optional)</label>
         <textarea id="proof" placeholder="e.g., App Store rating, testimonials, numbers, screenshots, case study"></textarea>
 
-        <label>Product description (paste key copy from the site)</label>
+        <label>Product description (paste key copy)</label>
         <textarea id="productDesc" placeholder="Paste: what it is, features, pricing, differentiators"></textarea>
 
         <div class="divider"></div>
@@ -372,6 +392,7 @@
           <input id="brandBg" type="text" placeholder="#0b0f19" />
           <input id="brandText" type="text" placeholder="#e7eefc" />
         </div>
+        <div class="hint">Palette extraction will auto-fill these. You can still override manually.</div>
 
         <label>Brand vibe</label>
         <div class="pillrow" id="vibeRow"></div>
@@ -412,7 +433,7 @@
           </div>
         </div>
 
-        <div class="hint">Generate button is at the bottom bar. It will refuse if palette scan is required but not available.</div>
+        <canvas id="paletteCanvas" width="64" height="64" style="display:none"></canvas>
       </div>
     </section>
 
@@ -446,7 +467,7 @@
         <div class="divider"></div>
 
         <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
-          <div class="badge">Example creatives (generated from palette)</div>
+          <div class="badge">Example creatives (based on palette)</div>
           <div class="badge" id="examplesStatus">Examples: ready</div>
         </div>
 
@@ -462,32 +483,30 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- Bottom bar: Generate button -->
 <div class="bottomBar">
   <div class="inner">
-    <div class="status" id="bottomStatus">Ready • Scan palette (optional) then Generate</div>
+    <div class="status" id="bottomStatus">Ready • Extract palette (recommended) then Generate</div>
     <div class="btns">
-      <button class="ghost" id="btnGenerateLite">Generate (simplified plan)</button>
-      <button class="primary" id="btnGenerate">Generate (palette + plan)</button>
+      <button class="ghost" id="btnGenerateLite">Generate (simplified)</button>
+      <button class="primary" id="btnGenerate">Generate (requires palette)</button>
     </div>
   </div>
 </div>
 
 <script>
-  // -----------------------------
-  // v1.1 changes:
-  // - Generate buttons moved to bottom bar
-  // - Add URL palette scan step (via proxy endpoint)
-  // - Add example creative thumbnails generated from palette
-  // - Simplified social plan output (shorter, more executable)
-  // -----------------------------
+  // v1.2:
+  // - Remove proxy scanning entirely
+  // - Add client-side palette extraction from uploaded image
+  // - Palette chips to re-apply extracted colors
+  // - Bottom generate buttons retained
+  // - Example creatives + simplified plan retained
 
   const VIBES = [
     "Minimal", "Premium", "Playful", "Techy", "Clinical", "Bold",
     "Warm", "No-nonsense", "Luxury", "Indie", "Energetic"
   ];
 
-  const KEY = "sf_growth_tool_v11";
+  const KEY = "sf_growth_tool_v12";
   const DEFAULTS = {
     brandPrimary: "#7aa2ff",
     brandSecondary: "#2ee59d",
@@ -496,8 +515,8 @@
   };
 
   let selectedVibes = new Set(["Techy", "No-nonsense"]);
-  let lastPaletteSource = "manual";
-  let lastPaletteScan = null; // { primary, secondary, bg, text, extracted: [...] }
+  let lastPaletteSource = "manual";   // "manual" | "image"
+  let lastPaletteScan = null;         // { primary, secondary, bg, text, extracted:[...] }
 
   const els = {
     siteUrl: q("#siteUrl"),
@@ -506,14 +525,23 @@
     icp: q("#icp"),
     proof: q("#proof"),
     productDesc: q("#productDesc"),
+
     brandPrimary: q("#brandPrimary"),
     brandSecondary: q("#brandSecondary"),
     brandBg: q("#brandBg"),
     brandText: q("#brandText"),
+
     vibeRow: q("#vibeRow"),
     goal: q("#goal"),
     freq: q("#freq"),
     tz: q("#tz"),
+
+    paletteFile: q("#paletteFile"),
+    btnExtractPalette: q("#btnExtractPalette"),
+    btnClearPalette: q("#btnClearPalette"),
+    paletteStatus: q("#paletteStatus"),
+    paletteChips: q("#paletteChips"),
+    paletteCanvas: q("#paletteCanvas"),
 
     output: q("#output"),
     outputMeta: q("#outputMeta"),
@@ -534,16 +562,18 @@
     txtBg: q("#txtBg"),
     txtText: q("#txtText"),
 
-    paletteStatus: q("#paletteStatus"),
     bottomStatus: q("#bottomStatus"),
     exampleGrid: q("#exampleGrid"),
     examplesStatus: q("#examplesStatus"),
+
+    btnGenerate: q("#btnGenerate"),
+    btnGenerateLite: q("#btnGenerateLite")
   };
 
   init();
 
   function init(){
-    // vibe pills
+    // vibes
     els.vibeRow.innerHTML = "";
     VIBES.forEach(v => {
       const pill = document.createElement("div");
@@ -558,26 +588,33 @@
       els.vibeRow.appendChild(pill);
     });
 
-    // buttons
+    // header buttons
     q("#btnReset").onclick = resetAll;
     q("#btnLoad").onclick = loadSample;
     q("#btnCopy").onclick = copyOutput;
     q("#btnExport").onclick = exportJSON;
 
-    q("#btnScanPalette").onclick = scanPaletteFromURL;
-    q("#btnGenerate").onclick = () => generate({ requirePalette: true });
-    q("#btnGenerateLite").onclick = () => generate({ requirePalette: false });
+    // palette buttons
+    els.btnExtractPalette.onclick = extractPaletteFromUpload;
+    els.btnClearPalette.onclick = clearExtractedPalette;
+
+    // bottom generate
+    els.btnGenerate.onclick = () => generate({ requirePalette: true });
+    els.btnGenerateLite.onclick = () => generate({ requirePalette: false });
 
     // save on input
     [
       "siteUrl","productName","valueProp","icp","proof","productDesc",
       "brandPrimary","brandSecondary","brandBg","brandText","goal","freq","tz"
-    ].forEach(id => q("#"+id).addEventListener("input", () => { saveState(); updatePreview(); renderExamples(); }));
+    ].forEach(id => q("#"+id).addEventListener("input", () => {
+      saveState(); updatePreview(); renderExamples(); updatePaletteStatusUI();
+    }));
 
     loadState();
     ensureDefaults();
     updatePreview();
     renderExamples();
+    updatePaletteStatusUI();
   }
 
   function q(sel){ return document.querySelector(sel); }
@@ -632,14 +669,17 @@
       icp: els.icp.value.trim(),
       proof: els.proof.value.trim(),
       productDesc: els.productDesc.value.trim(),
+
       brandPrimary: els.brandPrimary.value.trim(),
       brandSecondary: els.brandSecondary.value.trim(),
       brandBg: els.brandBg.value.trim(),
       brandText: els.brandText.value.trim(),
+
       goal: els.goal.value,
       freq: els.freq.value,
       tz: els.tz.value,
       vibes: [...selectedVibes],
+
       lastPaletteSource,
       lastPaletteScan
     };
@@ -652,20 +692,22 @@
     els.icp.value = s.icp ?? "";
     els.proof.value = s.proof ?? "";
     els.productDesc.value = s.productDesc ?? "";
+
     els.brandPrimary.value = s.brandPrimary ?? "";
     els.brandSecondary.value = s.brandSecondary ?? "";
     els.brandBg.value = s.brandBg ?? "";
     els.brandText.value = s.brandText ?? "";
+
     els.goal.value = s.goal ?? "installs";
     els.freq.value = s.freq ?? "5";
     els.tz.value = s.tz ?? "Europe/London";
 
     if (Array.isArray(s.vibes)) selectedVibes = new Set(s.vibes);
+
     lastPaletteSource = s.lastPaletteSource || "manual";
     lastPaletteScan = s.lastPaletteScan || null;
 
     [...els.vibeRow.children].forEach(p => p.classList.toggle("active", selectedVibes.has(p.textContent)));
-    updatePaletteStatus();
   }
 
   function saveState(){
@@ -720,75 +762,213 @@ Price:
     };
     setInputs(sample);
     saveState();
+    ensureDefaults();
     updatePreview();
     renderExamples();
+    updatePaletteStatusUI();
     toast("Loaded sample");
   }
 
-  function updatePaletteStatus(){
-    if (lastPaletteSource === "url" && lastPaletteScan){
-      els.paletteStatus.textContent = "Palette: scanned from URL";
-      els.kpiPalette.textContent = "URL scan";
-      els.bottomStatus.textContent = "Palette scanned • Ready to Generate";
-    } else {
-      els.paletteStatus.textContent = "Palette: manual";
-      els.kpiPalette.textContent = "Manual";
-      els.bottomStatus.textContent = "Ready • Scan palette (optional) then Generate";
-    }
-  }
-
   // -----------------------------
-  // URL palette scan (requires proxy)
+  // Palette extraction (client-side)
   // -----------------------------
-  async function scanPaletteFromURL(){
-    const url = els.siteUrl.value.trim();
-    if (!url){
-      toast("Enter a website URL first");
-      return;
-    }
-
-    // IMPORTANT:
-    // Client-side fetch of arbitrary websites is typically blocked by CORS.
-    // This expects a server endpoint at /api/palette?url=... which returns JSON:
-    // { primary, secondary, bg, text, extracted: ["#...","#..."] }
-    els.paletteStatus.textContent = "Palette: scanning…";
-    toast("Scanning URL colours…");
+  async function extractPaletteFromUpload(){
+    const file = els.paletteFile.files?.[0];
+    if (!file){ toast("Upload an image first"); return; }
 
     try{
-      const res = await fetch(`/api/palette?url=${encodeURIComponent(url)}`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
+      els.paletteStatus.textContent = "Palette: extracting…";
+      const img = await loadImageFromFile(file);
+      const palette = extractPaletteFromImage(img, 6);
 
-      // Apply to brand fields (with safety)
-      const primary = sanitizeHex(data.primary, DEFAULTS.brandPrimary);
-      const secondary = sanitizeHex(data.secondary, DEFAULTS.brandSecondary);
-      const bg = sanitizeHex(data.bg, DEFAULTS.brandBg);
-      const text = sanitizeHex(data.text, DEFAULTS.brandText);
+      if (!palette.length) throw new Error("No palette");
 
+      const bg = pickDarkest(palette);
+      const primary = pickMostSaturated(palette, bg);
+      const secondary = pickSecondMostSaturated(palette, [bg, primary]);
+      const text = isLight(bg) ? "#0b0f19" : "#e7eefc";
+
+      // apply
+      els.brandBg.value = bg;
       els.brandPrimary.value = primary;
       els.brandSecondary.value = secondary;
-      els.brandBg.value = bg;
       els.brandText.value = text;
 
-      lastPaletteSource = "url";
-      lastPaletteScan = { primary, secondary, bg, text, extracted: Array.isArray(data.extracted) ? data.extracted.slice(0,12) : [] };
+      lastPaletteSource = "image";
+      lastPaletteScan = { primary, secondary, bg, text, extracted: palette };
 
       updatePreview();
+      renderPaletteChips();
       renderExamples();
-      updatePaletteStatus();
+      updatePaletteStatusUI();
       saveState();
-      toast("Palette applied");
+      toast("Palette extracted");
     }catch(e){
       lastPaletteSource = "manual";
       lastPaletteScan = null;
-      updatePaletteStatus();
-      els.paletteStatus.textContent = "Palette: scan failed";
-      toast("Palette scan failed (proxy not set up or blocked)");
+      updatePaletteStatusUI();
+      toast("Palette extract failed");
     }
   }
 
+  function clearExtractedPalette(){
+    lastPaletteSource = "manual";
+    lastPaletteScan = null;
+    els.paletteChips.style.display = "none";
+    els.paletteChips.innerHTML = "";
+    updatePaletteStatusUI();
+    saveState();
+    toast("Cleared extracted palette");
+  }
+
+  function updatePaletteStatusUI(){
+    if (lastPaletteSource === "image" && lastPaletteScan){
+      els.paletteStatus.textContent = "Palette: extracted from image";
+      els.kpiPalette.textContent = "Image";
+      els.bottomStatus.textContent = "Palette extracted • Ready to Generate";
+      els.btnGenerate.disabled = false;
+      renderPaletteChips();
+    } else {
+      els.paletteStatus.textContent = "Palette: manual";
+      els.kpiPalette.textContent = "Manual";
+      els.bottomStatus.textContent = "Ready • Extract palette (recommended) then Generate";
+      // requirePalette mode will validate palette anyway; keep enabled
+      els.btnGenerate.disabled = false;
+      els.paletteChips.style.display = "none";
+    }
+  }
+
+  function renderPaletteChips(){
+    if (!(lastPaletteSource === "image" && lastPaletteScan && Array.isArray(lastPaletteScan.extracted) && lastPaletteScan.extracted.length)){
+      els.paletteChips.style.display = "none";
+      return;
+    }
+
+    els.paletteChips.style.display = "flex";
+    els.paletteChips.innerHTML = "";
+
+    lastPaletteScan.extracted.slice(0, 10).forEach(hex => {
+      const chip = document.createElement("div");
+      chip.className = "chip";
+      chip.innerHTML = `<span class="c" style="background:${hex}"></span><span>${hex}</span>`;
+      chip.onclick = () => {
+        // quick apply: shift roles by user choosing a color (applies as primary)
+        els.brandPrimary.value = hex;
+        updatePreview();
+        renderExamples();
+        saveState();
+        toast(`Applied ${hex} as primary`);
+      };
+      els.paletteChips.appendChild(chip);
+    });
+  }
+
+  function loadImageFromFile(file){
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+      img.onerror = reject;
+      img.src = url;
+    });
+  }
+
+  function extractPaletteFromImage(img, k){
+    const c = els.paletteCanvas;
+    const ctx = c.getContext("2d", { willReadFrequently: true });
+
+    ctx.clearRect(0,0,c.width,c.height);
+    ctx.drawImage(img, 0, 0, c.width, c.height);
+
+    const { data } = ctx.getImageData(0,0,c.width,c.height);
+    const pixels = [];
+    for (let i=0; i<data.length; i+=4){
+      const r=data[i], g=data[i+1], b=data[i+2], a=data[i+3];
+      if (a < 220) continue;
+
+      const max=Math.max(r,g,b), min=Math.min(r,g,b);
+      if (max < 18) continue;     // near-black noise
+      if (min > 240) continue;    // near-white noise
+
+      pixels.push([r,g,b]);
+    }
+    if (pixels.length < 80) return [];
+
+    let centroids = seedCentroids(pixels, k);
+    for (let iter=0; iter<8; iter++){
+      const clusters = Array.from({length:k}, () => ({sum:[0,0,0], n:0}));
+      for (const p of pixels){
+        const idx = nearestCentroid(p, centroids);
+        clusters[idx].sum[0]+=p[0]; clusters[idx].sum[1]+=p[1]; clusters[idx].sum[2]+=p[2];
+        clusters[idx].n++;
+      }
+      centroids = clusters.map((c,i) => c.n ? [
+        Math.round(c.sum[0]/c.n),
+        Math.round(c.sum[1]/c.n),
+        Math.round(c.sum[2]/c.n)
+      ] : centroids[i]);
+    }
+
+    // popularity sort
+    const counts = new Array(k).fill(0);
+    for (const p of pixels) counts[nearestCentroid(p, centroids)]++;
+    const ordered = centroids
+      .map((c,i)=>({c, n:counts[i]}))
+      .sort((a,b)=>b.n-a.n)
+      .map(x=>rgbToHex(x.c[0], x.c[1], x.c[2]));
+
+    return Array.from(new Set(ordered)).slice(0,k);
+  }
+
+  function seedCentroids(pixels, k){
+    const step = Math.max(1, Math.floor(pixels.length / k));
+    const cs = [];
+    for (let i=0; i<k; i++) cs.push(pixels[i*step] || pixels[pixels.length-1]);
+    return cs;
+  }
+  function nearestCentroid(p, centroids){
+    let best=0, bestD=Infinity;
+    for (let i=0; i<centroids.length; i++){
+      const c=centroids[i];
+      const d=(p[0]-c[0])**2+(p[1]-c[1])**2+(p[2]-c[2])**2;
+      if (d<bestD){ bestD=d; best=i; }
+    }
+    return best;
+  }
+  function rgbToHex(r,g,b){
+    return "#" + [r,g,b].map(v=>v.toString(16).padStart(2,"0")).join("");
+  }
+  function hexToRgb(hex){
+    const h = hex.replace("#","");
+    return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)];
+  }
+  function luminance(hex){
+    const [r,g,b]=hexToRgb(hex).map(v=>v/255);
+    return 0.2126*r + 0.7152*g + 0.0722*b;
+  }
+  function isLight(hex){ return luminance(hex) > 0.65; }
+  function satScore(hex){
+    const [r,g,b]=hexToRgb(hex).map(v=>v/255);
+    return Math.max(r,g,b) - Math.min(r,g,b);
+  }
+  function pickDarkest(palette){
+    return palette.slice().sort((a,b)=>luminance(a)-luminance(b))[0];
+  }
+  function pickMostSaturated(palette, avoidHex){
+    const avoid = new Set([avoidHex].filter(Boolean));
+    return palette
+      .filter(h=>!avoid.has(h))
+      .sort((a,b)=>satScore(b)-satScore(a))[0] || palette[0];
+  }
+  function pickSecondMostSaturated(palette, avoidList){
+    const avoid = new Set((avoidList||[]).filter(Boolean));
+    return palette
+      .filter(h=>!avoid.has(h))
+      .sort((a,b)=>satScore(b)-satScore(a))[0] || palette[1] || palette[0];
+  }
+
   // -----------------------------
-  // Example creatives (simple thumbnails)
+  // Example creatives (thumbnails)
   // -----------------------------
   function renderExamples(){
     const s = collectInputs();
@@ -861,19 +1041,18 @@ Price:
     if (!s.icp) missing.push("Target customer (ICP)");
     if (!s.productDesc) missing.push("Product description");
 
-    if (requirePalette){
-      // Require either URL-scanned palette OR valid manual palette fields
-      const hasUrlPalette = (lastPaletteSource === "url" && lastPaletteScan);
-      const manualOk = isValidPalette(s);
-      if (!hasUrlPalette && !manualOk){
-        toast("Palette required: scan URL or enter valid hex colours");
-        return;
-      }
-    }
-
     if (missing.length){
       toast("Missing: " + missing.join(", "));
       return;
+    }
+
+    if (requirePalette){
+      const hasExtracted = (lastPaletteSource === "image" && lastPaletteScan);
+      const manualOk = isValidPalette(s);
+      if (!hasExtracted && !manualOk){
+        toast("Palette required: extract from image or enter valid hex colours");
+        return;
+      }
     }
 
     const cadence = cadencePlan(parseInt(s.freq,10));
@@ -881,21 +1060,22 @@ Price:
     const angle = pickPrimaryAngle(s);
     const ctas = ctaBank(s.goal);
 
-    // KPIs
     els.kpiCadence.textContent = `${cadence.postsPerWeek}/week • ${cadence.reelsPerWeek} videos`;
     els.kpiHook.textContent = angle.hookStyle;
     els.kpiCTA.textContent = ctas.primary;
-    els.kpiPalette.textContent = (lastPaletteSource === "url" && lastPaletteScan) ? "URL scan" : "Manual";
+    els.kpiPalette.textContent = (lastPaletteSource === "image" && lastPaletteScan) ? "Image" : "Manual";
+
+    const palette = (lastPaletteSource === "image" && lastPaletteScan) ? lastPaletteScan : {
+      primary: sanitizeHex(s.brandPrimary, DEFAULTS.brandPrimary),
+      secondary: sanitizeHex(s.brandSecondary, DEFAULTS.brandSecondary),
+      bg: sanitizeHex(s.brandBg, DEFAULTS.brandBg),
+      text: sanitizeHex(s.brandText, DEFAULTS.brandText),
+      extracted: []
+    };
 
     const simplifiedPlan = {
       reference: { website: s.siteUrl || "(not provided)", product: s.productName },
-      palette: (lastPaletteSource === "url" && lastPaletteScan) ? lastPaletteScan : {
-        primary: sanitizeHex(s.brandPrimary, DEFAULTS.brandPrimary),
-        secondary: sanitizeHex(s.brandSecondary, DEFAULTS.brandSecondary),
-        bg: sanitizeHex(s.brandBg, DEFAULTS.brandBg),
-        text: sanitizeHex(s.brandText, DEFAULTS.brandText),
-        extracted: []
-      },
+      palette,
       positioning: {
         who: s.icp,
         promise: s.valueProp,
@@ -1026,7 +1206,7 @@ Price:
     lines.push(``);
     lines.push(`Simplified social plan`);
     lines.push(`- Cadence: ${plan.simplified.cadence}`);
-    lines.push(`- Post windows (${plan.simplified.postWindows ? "" : ""}${plan.reference.website ? "" : ""}${plan.reference.product ? "" : ""}${""}${""}${""}${""}${""}${""}${""}${""}${""})`);
+    lines.push(`- Post windows (${plan.reference.product} audience time):`);
     plan.simplified.postWindows.forEach(w => lines.push(`  - ${w.label}: ${w.time}`));
     lines.push(``);
     lines.push(`Non-negotiables`);
@@ -1075,80 +1255,5 @@ Price:
   }
 </script>
 
-<!--
-=========================================================
-Proxy endpoint needed for Scan URL colours
-=========================================================
-
-Because browsers can't fetch arbitrary sites due to CORS, you need a tiny backend.
-Simplest: Cloudflare Worker (no npm). Deploy, then set your frontend to call it.
-
-Worker (Cloudflare) example:
-
-export default {
-  async fetch(request) {
-    const url = new URL(request.url);
-    if (url.pathname !== "/api/palette") return new Response("Not found", { status: 404 });
-
-    const target = url.searchParams.get("url");
-    if (!target) return json({ error: "Missing url" }, 400);
-
-    // Fetch HTML (server-side, no CORS problem)
-    let html;
-    try {
-      const res = await fetch(target, { headers: { "User-Agent": "palette-bot/1.0" } });
-      html = await res.text();
-    } catch {
-      return json({ error: "Fetch failed" }, 400);
-    }
-
-    // Extract candidate colours from:
-    // - meta theme-color
-    // - inline CSS variables
-    // - common hex patterns
-    const hexes = Array.from(new Set(
-      (html.match(/#[0-9a-fA-F]{6}\b/g) || []).map(x => x.toLowerCase())
-    )).slice(0, 60);
-
-    // crude pick: first distinct colours
-    const pick = (i, fb) => hexes[i] || fb;
-
-    // choose a readable text colour (basic luminance check)
-    const primary = pick(0, "#7aa2ff");
-    const secondary = pick(1, "#2ee59d");
-    const bg = pick(2, "#0b0f19");
-
-    const text = isLight(bg) ? "#0b0f19" : "#e7eefc";
-
-    return json({
-      primary, secondary, bg, text,
-      extracted: hexes.slice(0, 12)
-    });
-  }
-};
-
-function json(obj, status = 200) {
-  return new Response(JSON.stringify(obj), {
-    status,
-    headers: {
-      "content-type": "application/json; charset=utf-8",
-      "access-control-allow-origin": "*"
-    }
-  });
-}
-
-function isLight(hex) {
-  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
-  // relative luminance
-  const L = (0.2126*r + 0.7152*g + 0.0722*b) / 255;
-  return L > 0.6;
-}
-
-=========================================================
-If you host your frontend somewhere else:
-- Put the worker on https://your-worker-domain/api/palette
-- Change fetch() in scanPaletteFromURL() to that full URL.
-=========================================================
--->
 </body>
 </html>
