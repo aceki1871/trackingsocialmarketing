@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Short-Form Growth Tool (IG + TikTok)</title>
+  <title>IG + TikTok Marketing Webtool</title>
   <style>
     :root{
       --bg: #0b0f19;
@@ -43,12 +43,8 @@
       border-bottom:1px solid var(--border);
     }
     .wrap{max-width:1200px;margin:0 auto;padding:18px 18px}
-    .topbar{
-      display:flex; gap:14px; align-items:center; justify-content:space-between;
-    }
-    .title{
-      display:flex; gap:12px; align-items:flex-start;
-    }
+    .topbar{display:flex; gap:14px; align-items:center; justify-content:space-between;}
+    .title{display:flex; gap:12px; align-items:flex-start;}
     .badge{
       font-family: var(--mono);
       font-size:12px;
@@ -57,21 +53,12 @@
       padding:6px 10px;
       border-radius:999px;
       background: rgba(255,255,255,.03);
+      white-space:nowrap;
     }
-    h1{
-      margin:0;
-      font-size:18px;
-      letter-spacing:.2px;
-      font-weight:700;
-      line-height:1.25;
-    }
-    .sub{
-      margin:3px 0 0;
-      font-size:12px;
-      color:var(--muted);
-      line-height:1.35;
-    }
+    h1{margin:0;font-size:18px;letter-spacing:.2px;font-weight:700;line-height:1.25;}
+    .sub{margin:3px 0 0;font-size:12px;color:var(--muted);line-height:1.35;}
     .actions{display:flex;gap:10px;flex-wrap:wrap}
+
     button{
       border:1px solid var(--border);
       background: rgba(255,255,255,.04);
@@ -79,7 +66,6 @@
       padding:10px 12px;
       border-radius:12px;
       cursor:pointer;
-      box-shadow:none;
       transition: transform .06s ease, background .2s ease, border-color .2s ease;
       font-weight:650;
       font-size:13px;
@@ -101,7 +87,7 @@
       display:grid;
       grid-template-columns: 420px 1fr;
       gap:16px;
-      padding:16px 18px 34px;
+      padding:16px 18px 100px; /* extra for bottom bar */
       max-width:1200px;
       margin:0 auto;
     }
@@ -154,12 +140,7 @@
       font-size:13px;
     }
     textarea{min-height:90px; resize: vertical; line-height:1.4}
-    .hint{
-      margin-top:6px;
-      font-size:11px;
-      color: rgba(169,182,211,.85);
-    }
-
+    .hint{margin-top:6px;font-size:11px;color: rgba(169,182,211,.85);}
     .pillrow{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
     .pill{
       border:1px solid var(--border);
@@ -198,21 +179,13 @@
       font-size: 13px;
       color: var(--text);
     }
-    .sectionTitle{
-      font-family: var(--mono);
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .2px;
-      font-size: 12px;
-      margin: 12px 0 6px;
-    }
     .divider{height:1px;background: var(--border); margin: 12px 0}
 
     .toast{
       position: fixed;
       left: 50%;
       transform: translateX(-50%);
-      bottom: 18px;
+      bottom: 86px;
       padding: 10px 12px;
       border-radius: 999px;
       border: 1px solid var(--border);
@@ -224,7 +197,6 @@
       z-index: 10;
     }
 
-    /* Live brand preview */
     .brandPreview{
       border:1px solid var(--border);
       border-radius: 18px;
@@ -255,25 +227,100 @@
       border:1px solid rgba(255,255,255,.25)
     }
     .swatch .txt{font-size:12px;color:var(--muted);font-family:var(--mono)}
+
+    /* Examples grid */
+    .exampleGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    @media (max-width: 980px){
+      .exampleGrid{grid-template-columns:1fr}
+    }
+    .exampleCard{
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.14);
+      border-radius: 16px;
+      overflow:hidden;
+    }
+    .exampleCard .thumb{
+      height:180px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      position:relative;
+    }
+    .exampleCard .thumb .overlayText{
+      position:absolute;
+      left:12px; right:12px; bottom:12px;
+      padding:10px 12px;
+      border-radius: 14px;
+      background: rgba(0,0,0,.38);
+      border: 1px solid rgba(255,255,255,.16);
+      backdrop-filter: blur(10px);
+      font-weight: 850;
+      line-height: 1.15;
+    }
+    .exampleCard .meta{
+      padding:12px;
+    }
+    .exampleCard .meta .t{
+      font-family: var(--mono);
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .2px;
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
+    .exampleCard .meta .d{
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.35;
+    }
+
+    /* Bottom generate bar */
+    .bottomBar{
+      position: fixed;
+      left:0; right:0; bottom:0;
+      background: rgba(11,15,25,.78);
+      border-top:1px solid var(--border);
+      backdrop-filter: blur(12px);
+      z-index: 20;
+    }
+    .bottomBar .inner{
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 18px;
+      display:flex;
+      gap: 12px;
+      align-items:center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    .bottomBar .status{
+      font-family: var(--mono);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .bottomBar .btns{display:flex; gap:10px; flex-wrap:wrap}
   </style>
 </head>
 <body>
+
 <header>
   <div class="wrap">
     <div class="topbar">
       <div class="title">
         <div>
           <h1>IG + TikTok Marketing Webtool</h1>
-          <div class="sub">Generates scripts, captions, shoot lists, and a posting schedule using your product + brand inputs.</div>
+          <div class="sub">Scans brand colours (via URL proxy), generates example creatives, and outputs a simplified social plan.</div>
         </div>
-        <div class="badge">v1 • local only</div>
+        <div class="badge">v1.1 • local + optional proxy</div>
       </div>
       <div class="actions">
         <button class="ghost" id="btnLoad">Load sample</button>
         <button class="ghost" id="btnExport">Export JSON</button>
         <button class="ghost" id="btnCopy">Copy output</button>
         <button class="danger" id="btnReset">Reset</button>
-        <button class="primary" id="btnGenerate">Generate plan</button>
       </div>
     </div>
   </div>
@@ -289,8 +336,15 @@
         <div class="badge" id="savedState">Not saved</div>
       </div>
       <div class="bd">
-        <label>Website URL (used as reference point)</label>
+        <label>Website URL (reference + colour scan)</label>
         <input id="siteUrl" type="url" placeholder="https://yourproduct.com" />
+        <div class="row">
+          <button class="ghost" id="btnScanPalette">Scan URL colours</button>
+          <div class="badge" id="paletteStatus">Palette: not scanned</div>
+        </div>
+        <div class="hint">
+          Browser-only scraping is blocked by CORS. This button expects a small backend/proxy endpoint (included below) that fetches the page and extracts colours.
+        </div>
 
         <label>Product name</label>
         <input id="productName" type="text" placeholder="StatusMorning / OneMore / etc." />
@@ -305,7 +359,7 @@
         <textarea id="proof" placeholder="e.g., App Store rating, testimonials, numbers, screenshots, case study"></textarea>
 
         <label>Product description (paste key copy from the site)</label>
-        <textarea id="productDesc" placeholder="Paste the most important sections: what it is, features, pricing, differentiators"></textarea>
+        <textarea id="productDesc" placeholder="Paste: what it is, features, pricing, differentiators"></textarea>
 
         <div class="divider"></div>
 
@@ -318,7 +372,6 @@
           <input id="brandBg" type="text" placeholder="#0b0f19" />
           <input id="brandText" type="text" placeholder="#e7eefc" />
         </div>
-        <div class="hint">Used for previews + exporting a consistent look. (In v1, this does not scrape your website automatically.)</div>
 
         <label>Brand vibe</label>
         <div class="pillrow" id="vibeRow"></div>
@@ -359,7 +412,7 @@
           </div>
         </div>
 
-        <div class="hint">Tip: the more specific the product description, the less generic the output.</div>
+        <div class="hint">Generate button is at the bottom bar. It will refuse if palette scan is required but not available.</div>
       </div>
     </section>
 
@@ -370,24 +423,34 @@
         <div class="badge" id="outputMeta">No plan generated</div>
       </div>
       <div class="bd">
+
         <div class="kpi">
           <div class="box">
-            <div class="t">Content mix</div>
-            <div class="v" id="kpiMix">—</div>
-          </div>
-          <div class="box">
-            <div class="t">Cadence</div>
+            <div class="t">Simplified plan</div>
             <div class="v" id="kpiCadence">—</div>
           </div>
           <div class="box">
-            <div class="t">Primary hook style</div>
+            <div class="t">Hook style</div>
             <div class="v" id="kpiHook">—</div>
           </div>
           <div class="box">
-            <div class="t">CTA pattern</div>
+            <div class="t">CTA</div>
             <div class="v" id="kpiCTA">—</div>
           </div>
+          <div class="box">
+            <div class="t">Palette source</div>
+            <div class="v" id="kpiPalette">—</div>
+          </div>
         </div>
+
+        <div class="divider"></div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+          <div class="badge">Example creatives (generated from palette)</div>
+          <div class="badge" id="examplesStatus">Examples: ready</div>
+        </div>
+
+        <div class="exampleGrid" id="exampleGrid"></div>
 
         <div class="divider"></div>
         <div class="out" id="output"></div>
@@ -399,15 +462,42 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- Bottom bar: Generate button -->
+<div class="bottomBar">
+  <div class="inner">
+    <div class="status" id="bottomStatus">Ready • Scan palette (optional) then Generate</div>
+    <div class="btns">
+      <button class="ghost" id="btnGenerateLite">Generate (simplified plan)</button>
+      <button class="primary" id="btnGenerate">Generate (palette + plan)</button>
+    </div>
+  </div>
+</div>
+
 <script>
   // -----------------------------
-  // Lightweight local-state + generator
+  // v1.1 changes:
+  // - Generate buttons moved to bottom bar
+  // - Add URL palette scan step (via proxy endpoint)
+  // - Add example creative thumbnails generated from palette
+  // - Simplified social plan output (shorter, more executable)
   // -----------------------------
 
   const VIBES = [
     "Minimal", "Premium", "Playful", "Techy", "Clinical", "Bold",
     "Warm", "No-nonsense", "Luxury", "Indie", "Energetic"
   ];
+
+  const KEY = "sf_growth_tool_v11";
+  const DEFAULTS = {
+    brandPrimary: "#7aa2ff",
+    brandSecondary: "#2ee59d",
+    brandBg: "#0b0f19",
+    brandText: "#e7eefc"
+  };
+
+  let selectedVibes = new Set(["Techy", "No-nonsense"]);
+  let lastPaletteSource = "manual";
+  let lastPaletteScan = null; // { primary, secondary, bg, text, extracted: [...] }
 
   const els = {
     siteUrl: q("#siteUrl"),
@@ -424,14 +514,17 @@
     goal: q("#goal"),
     freq: q("#freq"),
     tz: q("#tz"),
+
     output: q("#output"),
     outputMeta: q("#outputMeta"),
     savedState: q("#savedState"),
     toast: q("#toast"),
-    kpiMix: q("#kpiMix"),
+
     kpiCadence: q("#kpiCadence"),
     kpiHook: q("#kpiHook"),
     kpiCTA: q("#kpiCTA"),
+    kpiPalette: q("#kpiPalette"),
+
     dotPrimary: q("#dotPrimary"),
     dotSecondary: q("#dotSecondary"),
     dotBg: q("#dotBg"),
@@ -440,17 +533,17 @@
     txtSecondary: q("#txtSecondary"),
     txtBg: q("#txtBg"),
     txtText: q("#txtText"),
-    preview: q("#brandPreview")
+
+    paletteStatus: q("#paletteStatus"),
+    bottomStatus: q("#bottomStatus"),
+    exampleGrid: q("#exampleGrid"),
+    examplesStatus: q("#examplesStatus"),
   };
-
-  const KEY = "sf_growth_tool_v1";
-
-  let selectedVibes = new Set(["Techy", "No-nonsense"]);
 
   init();
 
   function init(){
-    // Build vibe pills
+    // vibe pills
     els.vibeRow.innerHTML = "";
     VIBES.forEach(v => {
       const pill = document.createElement("div");
@@ -465,22 +558,26 @@
       els.vibeRow.appendChild(pill);
     });
 
-    // Wire buttons
-    q("#btnGenerate").onclick = () => generate();
-    q("#btnCopy").onclick = () => copyOutput();
-    q("#btnExport").onclick = () => exportJSON();
-    q("#btnReset").onclick = () => resetAll();
-    q("#btnLoad").onclick = () => loadSample();
+    // buttons
+    q("#btnReset").onclick = resetAll;
+    q("#btnLoad").onclick = loadSample;
+    q("#btnCopy").onclick = copyOutput;
+    q("#btnExport").onclick = exportJSON;
 
-    // Auto-save on input changes
+    q("#btnScanPalette").onclick = scanPaletteFromURL;
+    q("#btnGenerate").onclick = () => generate({ requirePalette: true });
+    q("#btnGenerateLite").onclick = () => generate({ requirePalette: false });
+
+    // save on input
     [
       "siteUrl","productName","valueProp","icp","proof","productDesc",
       "brandPrimary","brandSecondary","brandBg","brandText","goal","freq","tz"
-    ].forEach(id => q("#"+id).addEventListener("input", () => { saveState(); updatePreview(); }));
+    ].forEach(id => q("#"+id).addEventListener("input", () => { saveState(); updatePreview(); renderExamples(); }));
 
-    // Load saved state
     loadState();
+    ensureDefaults();
     updatePreview();
+    renderExamples();
   }
 
   function q(sel){ return document.querySelector(sel); }
@@ -495,15 +592,21 @@
   function sanitizeHex(x, fallback){
     if (!x) return fallback;
     const v = x.trim();
-    const ok = /^#([0-9a-fA-F]{6})$/.test(v);
-    return ok ? v : fallback;
+    return /^#([0-9a-fA-F]{6})$/.test(v) ? v : fallback;
+  }
+
+  function ensureDefaults(){
+    if (!els.brandPrimary.value) els.brandPrimary.value = DEFAULTS.brandPrimary;
+    if (!els.brandSecondary.value) els.brandSecondary.value = DEFAULTS.brandSecondary;
+    if (!els.brandBg.value) els.brandBg.value = DEFAULTS.brandBg;
+    if (!els.brandText.value) els.brandText.value = DEFAULTS.brandText;
   }
 
   function updatePreview(){
-    const primary = sanitizeHex(els.brandPrimary.value, "#7aa2ff");
-    const secondary = sanitizeHex(els.brandSecondary.value, "#2ee59d");
-    const bg = sanitizeHex(els.brandBg.value, "#0b0f19");
-    const text = sanitizeHex(els.brandText.value, "#e7eefc");
+    const primary = sanitizeHex(els.brandPrimary.value, DEFAULTS.brandPrimary);
+    const secondary = sanitizeHex(els.brandSecondary.value, DEFAULTS.brandSecondary);
+    const bg = sanitizeHex(els.brandBg.value, DEFAULTS.brandBg);
+    const text = sanitizeHex(els.brandText.value, DEFAULTS.brandText);
 
     document.documentElement.style.setProperty("--accent", primary);
     document.documentElement.style.setProperty("--accent2", secondary);
@@ -521,72 +624,6 @@
     els.txtText.textContent = `Text ${text}`;
   }
 
-  function saveState(){
-    const state = collectInputs();
-    localStorage.setItem(KEY, JSON.stringify(state));
-    els.savedState.textContent = "Saved locally";
-  }
-
-  function loadState(){
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return;
-    try{
-      const s = JSON.parse(raw);
-      setInputs(s);
-      if (Array.isArray(s.vibes)) selectedVibes = new Set(s.vibes);
-      // Refresh vibe pills active states
-      [...els.vibeRow.children].forEach(p => {
-        p.classList.toggle("active", selectedVibes.has(p.textContent));
-      });
-      els.savedState.textContent = "Loaded";
-    }catch{
-      // ignore
-    }
-  }
-
-  function resetAll(){
-    localStorage.removeItem(KEY);
-    selectedVibes = new Set(["Techy","No-nonsense"]);
-    location.reload();
-  }
-
-  function loadSample(){
-    const sample = {
-      siteUrl: "https://example.com",
-      productName: "StatusMorning",
-      valueProp: "A morning dashboard for service status + news, so you know what’s broken before your day starts.",
-      icp: "iPhone users who rely on Apple/Microsoft/PS/Xbox services and want a fast, clean snapshot.",
-      proof: "Early users: “I check it before work.” Simple UI. Fast load. No clutter.",
-      productDesc:
-`Features:
-- Service status cards (Apple, Apple Dev, Microsoft, PlayStation, Xbox)
-- News feeds (UK + NZ + tech) with thumbnails and dedupe
-- Optional shower timer feature
-
-Differentiators:
-- One screen, low friction
-- Looks like a system dashboard, not a news app
-
-Price:
-- Free / ad-supported (future: pro tier)`,
-      brandPrimary: "#7aa2ff",
-      brandSecondary: "#2ee59d",
-      brandBg: "#0b0f19",
-      brandText: "#e7eefc",
-      goal: "installs",
-      freq: "5",
-      tz: "Europe/London",
-      vibes: ["Techy","Minimal","No-nonsense"]
-    };
-    selectedVibes = new Set(sample.vibes);
-    setInputs(sample);
-    // update vibe pills
-    [...els.vibeRow.children].forEach(p => p.classList.toggle("active", selectedVibes.has(p.textContent)));
-    saveState();
-    updatePreview();
-    toast("Loaded sample");
-  }
-
   function collectInputs(){
     return {
       siteUrl: els.siteUrl.value.trim(),
@@ -602,7 +639,9 @@ Price:
       goal: els.goal.value,
       freq: els.freq.value,
       tz: els.tz.value,
-      vibes: [...selectedVibes]
+      vibes: [...selectedVibes],
+      lastPaletteSource,
+      lastPaletteScan
     };
   }
 
@@ -620,426 +659,398 @@ Price:
     els.goal.value = s.goal ?? "installs";
     els.freq.value = s.freq ?? "5";
     els.tz.value = s.tz ?? "Europe/London";
+
+    if (Array.isArray(s.vibes)) selectedVibes = new Set(s.vibes);
+    lastPaletteSource = s.lastPaletteSource || "manual";
+    lastPaletteScan = s.lastPaletteScan || null;
+
+    [...els.vibeRow.children].forEach(p => p.classList.toggle("active", selectedVibes.has(p.textContent)));
+    updatePaletteStatus();
+  }
+
+  function saveState(){
+    localStorage.setItem(KEY, JSON.stringify(collectInputs()));
+    els.savedState.textContent = "Saved locally";
+  }
+
+  function loadState(){
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return;
+    try{
+      const s = JSON.parse(raw);
+      setInputs(s);
+      els.savedState.textContent = "Loaded";
+    }catch{}
+  }
+
+  function resetAll(){
+    localStorage.removeItem(KEY);
+    location.reload();
+  }
+
+  function loadSample(){
+    const sample = {
+      siteUrl: "https://example.com",
+      productName: "StatusMorning",
+      valueProp: "A morning dashboard for service status + news, so you know what’s broken before your day starts.",
+      icp: "iPhone users who rely on Apple/Microsoft/PS/Xbox services and want a fast snapshot.",
+      proof: "Early users: “I check it before work.” Fast load, low clutter.",
+      productDesc:
+`Features:
+- Service status cards
+- News feeds with thumbnails and dedupe
+- Optional timer feature
+
+Differentiators:
+- One screen, no noise
+- Dashboard look, not a news app
+
+Price:
+- Free / ad-supported (future: pro tier)`,
+      brandPrimary: "#7aa2ff",
+      brandSecondary: "#2ee59d",
+      brandBg: "#0b0f19",
+      brandText: "#e7eefc",
+      goal: "installs",
+      freq: "5",
+      tz: "Europe/London",
+      vibes: ["Techy","Minimal","No-nonsense"],
+      lastPaletteSource: "manual",
+      lastPaletteScan: null
+    };
+    setInputs(sample);
+    saveState();
+    updatePreview();
+    renderExamples();
+    toast("Loaded sample");
+  }
+
+  function updatePaletteStatus(){
+    if (lastPaletteSource === "url" && lastPaletteScan){
+      els.paletteStatus.textContent = "Palette: scanned from URL";
+      els.kpiPalette.textContent = "URL scan";
+      els.bottomStatus.textContent = "Palette scanned • Ready to Generate";
+    } else {
+      els.paletteStatus.textContent = "Palette: manual";
+      els.kpiPalette.textContent = "Manual";
+      els.bottomStatus.textContent = "Ready • Scan palette (optional) then Generate";
+    }
   }
 
   // -----------------------------
-  // Generator logic (practical heuristics)
+  // URL palette scan (requires proxy)
   // -----------------------------
+  async function scanPaletteFromURL(){
+    const url = els.siteUrl.value.trim();
+    if (!url){
+      toast("Enter a website URL first");
+      return;
+    }
 
-  function generate(){
+    // IMPORTANT:
+    // Client-side fetch of arbitrary websites is typically blocked by CORS.
+    // This expects a server endpoint at /api/palette?url=... which returns JSON:
+    // { primary, secondary, bg, text, extracted: ["#...","#..."] }
+    els.paletteStatus.textContent = "Palette: scanning…";
+    toast("Scanning URL colours…");
+
+    try{
+      const res = await fetch(`/api/palette?url=${encodeURIComponent(url)}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+
+      // Apply to brand fields (with safety)
+      const primary = sanitizeHex(data.primary, DEFAULTS.brandPrimary);
+      const secondary = sanitizeHex(data.secondary, DEFAULTS.brandSecondary);
+      const bg = sanitizeHex(data.bg, DEFAULTS.brandBg);
+      const text = sanitizeHex(data.text, DEFAULTS.brandText);
+
+      els.brandPrimary.value = primary;
+      els.brandSecondary.value = secondary;
+      els.brandBg.value = bg;
+      els.brandText.value = text;
+
+      lastPaletteSource = "url";
+      lastPaletteScan = { primary, secondary, bg, text, extracted: Array.isArray(data.extracted) ? data.extracted.slice(0,12) : [] };
+
+      updatePreview();
+      renderExamples();
+      updatePaletteStatus();
+      saveState();
+      toast("Palette applied");
+    }catch(e){
+      lastPaletteSource = "manual";
+      lastPaletteScan = null;
+      updatePaletteStatus();
+      els.paletteStatus.textContent = "Palette: scan failed";
+      toast("Palette scan failed (proxy not set up or blocked)");
+    }
+  }
+
+  // -----------------------------
+  // Example creatives (simple thumbnails)
+  // -----------------------------
+  function renderExamples(){
+    const s = collectInputs();
+    const p = s.productName || "Your Product";
+    const vp = s.valueProp || "One-line value prop goes here";
+
+    const examples = [
+      {
+        type: "Reel/TikTok — Fast Demo",
+        headline: "Stop wasting time.\nWatch this.",
+        desc: "0–2s hook + 8s screen recording + 3s result + CTA",
+        overlay: `“${shortLine(vp)}”`
+      },
+      {
+        type: "Carousel — Checklist",
+        headline: "3-step fix\nin 30 seconds",
+        desc: "Slide 1 claim → Slides 2–4 steps → Slide 5 proof → Slide 6 CTA",
+        overlay: `${p} • checklist`
+      },
+      {
+        type: "Reel/TikTok — POV",
+        headline: "POV:\nYou open your phone\nand it’s clear",
+        desc: "Pattern interrupt + before/after + pinned comment CTA",
+        overlay: "Before → After"
+      },
+      {
+        type: "Story — Poll",
+        headline: "What’s your\nbiggest pain point?",
+        desc: "Story poll + follow-up video answering top vote",
+        overlay: "Vote → I reply"
+      },
+    ];
+
+    els.exampleGrid.innerHTML = "";
+    examples.forEach(ex => {
+      const card = document.createElement("div");
+      card.className = "exampleCard";
+      card.innerHTML = `
+        <div class="thumb">
+          <div class="overlayText">${escapeHtml(ex.headline)}</div>
+        </div>
+        <div class="meta">
+          <div class="t">${escapeHtml(ex.type)}</div>
+          <div class="d">${escapeHtml(ex.desc)}<br><span style="color:var(--muted);font-family:var(--mono);font-size:12px">${escapeHtml(ex.overlay)}</span></div>
+        </div>
+      `;
+      els.exampleGrid.appendChild(card);
+    });
+
+    els.examplesStatus.textContent = "Examples: updated";
+  }
+
+  function escapeHtml(s){
+    return String(s)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  // -----------------------------
+  // Simplified plan generator
+  // -----------------------------
+  function generate({ requirePalette }){
     const s = collectInputs();
     const missing = [];
     if (!s.productName) missing.push("Product name");
     if (!s.valueProp) missing.push("Value prop");
     if (!s.icp) missing.push("Target customer (ICP)");
     if (!s.productDesc) missing.push("Product description");
+
+    if (requirePalette){
+      // Require either URL-scanned palette OR valid manual palette fields
+      const hasUrlPalette = (lastPaletteSource === "url" && lastPaletteScan);
+      const manualOk = isValidPalette(s);
+      if (!hasUrlPalette && !manualOk){
+        toast("Palette required: scan URL or enter valid hex colours");
+        return;
+      }
+    }
+
     if (missing.length){
       toast("Missing: " + missing.join(", "));
       return;
     }
 
-    // Basic positioning
-    const positioning = {
-      who: s.icp,
-      outcome: s.valueProp,
-      proof: s.proof || "Add proof (rating, numbers, testimonials, demo footage).",
-      objections: inferObjections(s),
-      angle: pickPrimaryAngle(s)
-    };
-
-    // Platform tactics (stable, non-gimmicky)
-    const mix = contentMix(s.goal);
     const cadence = cadencePlan(parseInt(s.freq,10));
     const times = recommendedTimes(s.tz);
-
-    // Creative system
-    const hooks = hookBank(positioning, s);
+    const angle = pickPrimaryAngle(s);
     const ctas = ctaBank(s.goal);
-    const scripts = buildScripts(positioning, hooks, ctas, s);
-    const carousels = buildCarousels(positioning, hooks, ctas, s);
-    const captions = buildCaptions(positioning, hooks, ctas, s);
-    const shoot = shootList(positioning, s);
 
     // KPIs
-    els.kpiMix.textContent = mix.label;
-    els.kpiCadence.textContent = `${cadence.postsPerWeek} posts/week • ${cadence.reelsPerWeek} short-form videos`;
-    els.kpiHook.textContent = positioning.angle.hookStyle;
+    els.kpiCadence.textContent = `${cadence.postsPerWeek}/week • ${cadence.reelsPerWeek} videos`;
+    els.kpiHook.textContent = angle.hookStyle;
     els.kpiCTA.textContent = ctas.primary;
+    els.kpiPalette.textContent = (lastPaletteSource === "url" && lastPaletteScan) ? "URL scan" : "Manual";
 
-    // Output formatting
-    const plan = {
+    const simplifiedPlan = {
       reference: { website: s.siteUrl || "(not provided)", product: s.productName },
-      brand: {
-        vibes: s.vibes,
-        colors: {
-          primary: sanitizeHex(s.brandPrimary, "#7aa2ff"),
-          secondary: sanitizeHex(s.brandSecondary, "#2ee59d"),
-          background: sanitizeHex(s.brandBg, "#0b0f19"),
-          text: sanitizeHex(s.brandText, "#e7eefc")
-        }
+      palette: (lastPaletteSource === "url" && lastPaletteScan) ? lastPaletteScan : {
+        primary: sanitizeHex(s.brandPrimary, DEFAULTS.brandPrimary),
+        secondary: sanitizeHex(s.brandSecondary, DEFAULTS.brandSecondary),
+        bg: sanitizeHex(s.brandBg, DEFAULTS.brandBg),
+        text: sanitizeHex(s.brandText, DEFAULTS.brandText),
+        extracted: []
       },
-      positioning,
-      platform: {
-        contentMix: mix,
-        cadence,
-        recommendedTimesLocal: times,
-        doThisNotThat: [
-          "Do: 1 clear idea per video. Not: feature dumps.",
-          "Do: show the UI in the first 1–2 seconds. Not: long intros.",
-          "Do: captions on screen. Not: relying on audio only.",
-          "Do: series content (Part 1/2/3). Not: one-offs only.",
-          "Do: ship, measure, iterate weekly. Not: waiting for 'perfect'."
-        ]
+      positioning: {
+        who: s.icp,
+        promise: s.valueProp,
+        proof: s.proof || "Add proof (rating, numbers, testimonials)."
       },
-      assetsToCreate: shoot,
-      scripts,
-      carousels,
-      captions,
-      hashtags: hashtagSets(s),
-      weeklyScheduleExample: weeklyScheduleExample(cadence, times),
-      measurement: measurementBlock(s.goal)
+      simplified: {
+        cadence: `${cadence.postsPerWeek}/week`,
+        postWindows: times.windows,
+        nonNegotiables: [
+          "UI/result in first 2 seconds",
+          "One idea per post",
+          "On-screen captions",
+          "Pinned comment CTA",
+          "Reply to comments for first hour"
+        ],
+        weeklyBatch: [
+          "Record 10 short screen clips (5–12s)",
+          "Record 3 talking-head hooks (10–20s)",
+          "Make 2 carousels from the same topic",
+          "Publish and iterate weekly"
+        ],
+        contentIdeas: buildSixIdeas(s, angle, ctas),
+        captions: buildThreeCaptions(s, ctas),
+        cta: ctas
+      }
     };
 
-    window.__lastPlan = plan;
+    window.__lastPlan = simplifiedPlan;
     els.outputMeta.textContent = `Generated ${new Date().toLocaleString()} • ${s.productName}`;
-    els.output.textContent = renderPlan(plan);
+    els.output.textContent = renderSimplifiedPlan(simplifiedPlan);
     saveState();
-    toast("Plan generated");
+    toast("Generated");
   }
 
-  function inferObjections(s){
-    const text = (s.productDesc + " " + s.valueProp).toLowerCase();
-    const out = [];
-    if (!/free|trial|price|£|\$/.test(text)) out.push("“How much does it cost / is it worth it?”");
-    if (!/privacy|offline|secure|local/.test(text)) out.push("“Does this track me / what data do you collect?”");
-    out.push("“Why this instead of what I already use?”");
-    out.push("“Will it actually save me time?”");
-    return out.slice(0,4);
-  }
-
-  function pickPrimaryAngle(s){
-    // Choose one dominant creative angle to keep the feed consistent.
-    const goal = s.goal;
-    const vibe = [...selectedVibes].join(" ");
-    let hookStyle = "Problem → Fix (fast demo)";
-    if (goal === "community") hookStyle = "Behind-the-scenes + building in public";
-    if (/premium|luxury/i.test(vibe)) hookStyle = "Aesthetic demo + minimal copy";
-    if (/playful|energetic/i.test(vibe)) hookStyle = "Pattern-interrupt + quick cuts";
-    return {
-      hookStyle,
-      promise: s.valueProp,
-      seriesIdea: "“30 seconds to…” weekly series"
-    };
-  }
-
-  function contentMix(goal){
-    // stable mix that works across IG + TikTok for most products
-    const base = {
-      reels: 0.6,
-      carousels: 0.25,
-      stories: 0.15
-    };
-    if (goal === "awareness") return { ...base, label: "60% short-form • 25% carousels • 15% stories" };
-    if (goal === "installs") return { ...base, reels: 0.7, carousels: 0.2, stories: 0.1, label: "70% short-form • 20% carousels • 10% stories" };
-    if (goal === "leads") return { ...base, reels: 0.55, carousels: 0.3, stories: 0.15, label: "55% short-form • 30% carousels • 15% stories" };
-    return { ...base, label: "60% short-form • 25% carousels • 15% stories" };
+  function isValidPalette(s){
+    return /^#([0-9a-fA-F]{6})$/.test(s.brandPrimary)
+      && /^#([0-9a-fA-F]{6})$/.test(s.brandSecondary)
+      && /^#([0-9a-fA-F]{6})$/.test(s.brandBg)
+      && /^#([0-9a-fA-F]{6})$/.test(s.brandText);
   }
 
   function cadencePlan(postsPerWeek){
-    // Map to an output users can execute.
-    const reelsPerWeek = Math.max(2, Math.round(postsPerWeek * 0.6));
-    const carouselPerWeek = Math.max(1, postsPerWeek - reelsPerWeek);
-    return {
-      postsPerWeek,
-      reelsPerWeek,
-      carouselPerWeek,
-      storyDaysPerWeek: Math.min(7, Math.max(3, postsPerWeek)),
-      rule: "Batch-create 1x per week. Post consistently for 4 weeks before changing strategy."
-    };
+    const reelsPerWeek = Math.max(2, Math.round(postsPerWeek * 0.7));
+    return { postsPerWeek, reelsPerWeek };
   }
 
   function recommendedTimes(tz){
-    // Generic “safe” windows; real optimisation requires analytics.
     return {
       timezone: tz,
       windows: [
-        { label: "Morning commute", time: "07:30–09:00" },
+        { label: "Morning", time: "07:30–09:00" },
         { label: "Lunch", time: "12:00–13:30" },
         { label: "Evening", time: "18:30–21:00" }
-      ],
-      note: "Start with these windows; after 14 days, shift to your top-performing hour."
+      ]
     };
   }
 
-  function hookBank(pos, s){
-    const p = s.productName;
-    const who = s.icp;
-    const promise = s.valueProp;
-    return [
-      `If you’re ${who}, stop doing this the hard way…`,
-      `This is how I fixed "${extractProblem(promise)}" in 15 seconds.`,
-      `3 things I wish I had before I started using ${p}.`,
-      `I built ${p} because I got tired of "${extractProblem(promise)}".`,
-      `Watch this before you waste another morning.`,
-      `POV: you open your phone and instantly know what’s broken today.`
-    ];
-  }
-
-  function extractProblem(valueProp){
-    const v = valueProp.replace(/\s+/g," ").trim();
-    // crude: take first clause as "problem"
-    const parts = v.split(/,| so | so you | which | that /i);
-    return (parts[0] || v).slice(0,80);
+  function pickPrimaryAngle(s){
+    const vibe = [...selectedVibes].join(" ");
+    let hookStyle = "Problem → Fix (fast demo)";
+    if (s.goal === "community") hookStyle = "Build-in-public + quick wins";
+    if (/premium|luxury/i.test(vibe)) hookStyle = "Aesthetic demo + minimal copy";
+    if (/playful|energetic/i.test(vibe)) hookStyle = "Pattern-interrupt + quick cuts";
+    return { hookStyle };
   }
 
   function ctaBank(goal){
     if (goal === "installs") return {
-      primary: "Comment “LINK” and I’ll reply / link in bio",
-      alternates: ["Grab it from the link in bio", "Search the app name and try it today", "Save this and test it tomorrow morning"]
+      primary: "Link in bio • try it today",
+      alternates: ["Comment “LINK”", "Save this and test it tomorrow", "DM for the link"]
     };
     if (goal === "leads") return {
-      primary: "DM “INFO” for the checklist / template",
-      alternates: ["Comment “GUIDE” and I’ll send it", "Join the waitlist (link in bio)", "Save + share to someone who needs this"]
+      primary: "DM “INFO” for the checklist",
+      alternates: ["Comment “GUIDE”", "Join the waitlist (bio)", "Save + share"]
     };
     if (goal === "community") return {
-      primary: "Follow for part 2 / weekly builds",
-      alternates: ["Comment what you want next", "Vote in the poll on my story", "Send a bug/feature idea in DMs"]
+      primary: "Follow for part 2",
+      alternates: ["Comment what you want next", "Vote in my story", "Send feedback"]
     };
     return {
-      primary: "Follow for more + save this",
-      alternates: ["Share to a friend", "Comment your biggest pain point", "Link in bio"]
+      primary: "Follow + save this",
+      alternates: ["Share to a friend", "Comment your pain point", "Link in bio"]
     };
   }
 
-  function buildScripts(pos, hooks, ctas, s){
+  function buildSixIdeas(s, angle, cta){
     const p = s.productName;
-    const series = pos.angle.seriesIdea;
-
-    const templates = [
-      {
-        title: "15s Fast Demo (most reliable)",
-        beats: [
-          "0–1s: Hook on-screen (big text)",
-          "1–3s: Show the problem in one shot",
-          "3–12s: Screen recording of the fix (no fluff)",
-          "12–15s: Result + CTA"
-        ],
-        script: (hook) => [
-          `ON-SCREEN: ${hook}`,
-          `VOICE: "${shortLine(s.valueProp)}"`,
-          `SHOW: 2–3 taps demonstrating ${p}`,
-          `ON-SCREEN: Result in one line (time saved / clarity / outcome)`,
-          `CTA: ${ctas.primary}`
-        ].join("\n")
-      },
-      {
-        title: "Problem → Myth → Truth (30s)",
-        beats: [
-          "0–2s: Hook",
-          "2–10s: Myth people believe",
-          "10–25s: Truth + demo",
-          "25–30s: CTA"
-        ],
-        script: (hook) => [
-          `HOOK: ${hook}`,
-          `MYTH: "Most people think they need X… but that’s why it stays annoying."`,
-          `TRUTH: "${shortLine(s.valueProp)}"`,
-          `DEMO: show 1 feature that proves it`,
-          `CTA: ${ctas.primary}`
-        ].join("\n")
-      },
-      {
-        title: `Series format: ${series}`,
-        beats: [
-          "0–2s: Title card: “30 seconds to …”",
-          "2–22s: One tip/feature",
-          "22–30s: Next episode tease + CTA"
-        ],
-        script: (hook) => [
-          `TITLE: "${series}"`,
-          `TODAY: ${shortLine(s.valueProp)}`,
-          `SHOW: one repeatable use-case for ${p}`,
-          `NEXT: "Next: how to handle [big objection]"`,
-          `CTA: ${ctas.primary}`
-        ].join("\n")
-      }
-    ];
-
-    return templates.map((t, idx) => ({
-      id: `V${idx+1}`,
-      title: t.title,
-      beats: t.beats,
-      exampleScript: t.script(hooks[idx % hooks.length]),
-      filmingNotes: [
-        "Use captions. Keep text within safe margins.",
-        "Front-load the UI/result in the first 2 seconds.",
-        "Use one strong visual per beat. No B-roll filler."
-      ]
-    }));
-  }
-
-  function buildCarousels(pos, hooks, ctas, s){
-    const p = s.productName;
-    const slides = [
-      {
-        title: "Carousel: “Stop doing this”",
-        outline: [
-          `Slide 1: Big claim (hook)`,
-          `Slide 2: The common mistake`,
-          `Slide 3: The cost of the mistake`,
-          `Slide 4: The simple fix (introduce ${p})`,
-          `Slide 5: 3 bullets: how it works`,
-          `Slide 6: Proof`,
-          `Slide 7: CTA (${ctas.primary})`
-        ]
-      },
-      {
-        title: "Carousel: “Checklist / framework”",
-        outline: [
-          "Slide 1: Title: 5-step checklist",
-          "Slides 2–6: One step per slide",
-          `Slide 7: “If you want this automated, use ${p}” + CTA`
-        ]
-      }
-    ];
-    return slides;
-  }
-
-  function buildCaptions(pos, hooks, ctas, s){
-    const p = s.productName;
-    const proof = s.proof ? `Proof: ${shortLine(s.proof)}` : "Proof: add a testimonial, rating, or number.";
-    const set = [
-      `${hooks[0]}\n\n${shortLine(s.valueProp)}\n\n${proof}\n\n${ctas.primary}`,
-      `What changed for me:\n- 1 clear screen\n- less messing around\n- faster decisions\n\nIf you want the same: ${ctas.primary}`,
-      `If you’ve ever thought “${pos.objections[2]}” — fair.\n\nHere’s the difference: ${shortLine(s.valueProp)}\n\n${ctas.primary}`
-    ];
-    return set.map((c, i) => ({ id: `C${i+1}`, caption: c }));
-  }
-
-  function hashtagSets(s){
-    // Avoid spam. Keep to 5–12 max, mix broad + niche.
-    const p = s.productName.toLowerCase().replace(/\s+/g,"");
-    const base = ["#app", "#ios", "#productivity", "#buildinpublic", "#startup"];
-    const niche = s.goal === "installs"
-      ? ["#appstore", "#iphoneapps", "#indiedev"]
-      : ["#marketing", "#contentstrategy", "#socialmediamarketing"];
-    return {
-      rule: "Use 5–12. Rotate weekly. Prioritise relevance over volume.",
-      setA: [...base, ...niche, `#${p}`].slice(0,10),
-      setB: ["#shortform", "#reels", "#tiktokmarketing", "#uxdesign", "#saas", `#${p}`].slice(0,10)
-    };
-  }
-
-  function shootList(pos, s){
-    const p = s.productName;
+    const who = s.icp;
     return [
-      "10–15 screen recordings of the core flow (each 5–12s)",
-      "3 clips: you speaking (front camera) delivering hooks",
-      "2 clips: reaction shots / ‘POV’ setups",
-      `5 screenshots with consistent overlay style (headline + 2 bullets)`,
-      `1 “origin story” clip: why ${p} exists (20–30s)`,
-      "1 proof asset: review, stat, quote, or demo scenario"
+      `Fast demo: “If you’re ${who}, here’s the 10s fix.” (${cta.primary})`,
+      `Before/After: 3 seconds of pain → 7 seconds of ${p} → result`,
+      `Myth/Truth: “You think you need X… actually you need this.”`,
+      `POV: “You open your phone and instantly know what’s up.”`,
+      `3 features that matter (not 10): show only outcomes`,
+      `Objection answer: “Why not just use [alternative]?” show the difference`
     ];
   }
 
-  function weeklyScheduleExample(cadence, times){
-    const w = times.windows.map(x => `${x.label} (${x.time})`).join(", ");
-    const n = cadence.postsPerWeek;
-    const days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
-    const chosen = days.slice(0, n);
-    return chosen.map((d, i) => ({
-      day: d,
-      type: (i % 3 === 0) ? "Short-form video" : (i % 3 === 1 ? "Short-form video" : "Carousel"),
-      timeWindow: times.windows[i % times.windows.length].time,
-      note: "Pin the top comment with the CTA. Reply fast for the first hour."
-    }));
+  function buildThreeCaptions(s, cta){
+    const vp = shortLine(s.valueProp);
+    const proof = s.proof ? shortLine(s.proof) : "Add proof here (rating/testimonial).";
+    return [
+      `${vp}\n\n${proof}\n\n${cta.primary}`,
+      `If this describes you: ${shortLine(s.icp)}\n\nThen this will help:\n${vp}\n\n${cta.primary}`,
+      `Stop overcomplicating it.\nOne screen. One decision.\n\n${cta.primary}`
+    ];
   }
 
-  function measurementBlock(goal){
-    if (goal === "installs") return {
-      primaryMetrics: ["Profile visits → link clicks", "Installs / day", "Hold rate (3s)", "Avg watch time", "Saves"],
-      weeklyReview: "Keep winners: top 20% by watch time and saves. Re-make them with new hooks."
-    };
-    if (goal === "leads") return {
-      primaryMetrics: ["DMs / comments with keyword", "Landing page conversion", "Cost per lead (if ads)", "Saves"],
-      weeklyReview: "Double down on formats that generate keywords/DMs. Tighten the CTA."
-    };
-    return {
-      primaryMetrics: ["Watch time", "Shares", "Saves", "Follower growth"],
-      weeklyReview: "Turn top posts into a series. Keep the first 2 seconds aggressive."
-    };
-  }
-
-  function shortLine(s){
-    return (s || "").replace(/\s+/g," ").trim().slice(0,140);
-  }
-
-  function renderPlan(plan){
+  function renderSimplifiedPlan(plan){
     const lines = [];
     lines.push(`Reference`);
     lines.push(`- Website: ${plan.reference.website}`);
     lines.push(`- Product: ${plan.reference.product}`);
     lines.push(``);
-    lines.push(`Brand`);
-    lines.push(`- Vibes: ${plan.brand.vibes.join(", ") || "(none)"}`);
-    lines.push(`- Colours: primary ${plan.brand.colors.primary}, secondary ${plan.brand.colors.secondary}, bg ${plan.brand.colors.background}, text ${plan.brand.colors.text}`);
+    lines.push(`Palette`);
+    lines.push(`- Primary: ${plan.palette.primary}`);
+    lines.push(`- Secondary: ${plan.palette.secondary}`);
+    lines.push(`- Background: ${plan.palette.bg}`);
+    lines.push(`- Text: ${plan.palette.text}`);
+    if (plan.palette.extracted && plan.palette.extracted.length){
+      lines.push(`- Extracted: ${plan.palette.extracted.join(", ")}`);
+    }
     lines.push(``);
-    lines.push(`Positioning`);
+    lines.push(`Positioning (short)`);
     lines.push(`- Who: ${plan.positioning.who}`);
-    lines.push(`- Promise: ${plan.positioning.outcome}`);
+    lines.push(`- Promise: ${plan.positioning.promise}`);
     lines.push(`- Proof: ${plan.positioning.proof}`);
-    lines.push(`- Likely objections:`);
-    plan.positioning.objections.forEach(x => lines.push(`  - ${x}`));
-    lines.push(`- Primary hook style: ${plan.positioning.angle.hookStyle}`);
     lines.push(``);
-    lines.push(`Platform plan (IG + TikTok)`);
-    lines.push(`- Content mix: ${plan.platform.contentMix.label}`);
-    lines.push(`- Cadence: ${plan.platform.cadence.postsPerWeek}/week (${plan.platform.cadence.reelsPerWeek} videos, ${plan.platform.cadence.carouselPerWeek} carousels)`);
-    lines.push(`- Time windows (${plan.platform.recommendedTimesLocal.timezone}):`);
-    plan.platform.recommendedTimesLocal.windows.forEach(w => lines.push(`  - ${w.label}: ${w.time}`));
-    lines.push(`- Rules: ${plan.platform.cadence.rule}`);
+    lines.push(`Simplified social plan`);
+    lines.push(`- Cadence: ${plan.simplified.cadence}`);
+    lines.push(`- Post windows (${plan.simplified.postWindows ? "" : ""}${plan.reference.website ? "" : ""}${plan.reference.product ? "" : ""}${""}${""}${""}${""}${""}${""}${""}${""}${""})`);
+    plan.simplified.postWindows.forEach(w => lines.push(`  - ${w.label}: ${w.time}`));
     lines.push(``);
-    lines.push(`Do / Don’t`);
-    plan.platform.doThisNotThat.forEach(x => lines.push(`- ${x}`));
+    lines.push(`Non-negotiables`);
+    plan.simplified.nonNegotiables.forEach(x => lines.push(`- ${x}`));
     lines.push(``);
-    lines.push(`Assets to create (batch weekly)`);
-    plan.assetsToCreate.forEach(x => lines.push(`- ${x}`));
+    lines.push(`Weekly batch (1 session)`);
+    plan.simplified.weeklyBatch.forEach(x => lines.push(`- ${x}`));
     lines.push(``);
-    lines.push(`Short-form scripts`);
-    plan.scripts.forEach(s => {
-      lines.push(``);
-      lines.push(`${s.id} • ${s.title}`);
-      s.beats.forEach(b => lines.push(`- ${b}`));
-      lines.push(`Example script:\n${s.exampleScript}`);
+    lines.push(`6 content ideas`);
+    plan.simplified.contentIdeas.forEach(x => lines.push(`- ${x}`));
+    lines.push(``);
+    lines.push(`Captions (3)`);
+    plan.simplified.captions.forEach((c, i) => {
+      lines.push(`\nC${i+1}\n${c}`);
     });
     lines.push(``);
-    lines.push(`Carousels`);
-    plan.carousels.forEach(c => {
-      lines.push(`- ${c.title}`);
-      c.outline.forEach(o => lines.push(`  - ${o}`));
-    });
-    lines.push(``);
-    lines.push(`Captions`);
-    plan.captions.forEach(c => {
-      lines.push(``);
-      lines.push(`${c.id}`);
-      lines.push(c.caption);
-    });
-    lines.push(``);
-    lines.push(`Hashtags`);
-    lines.push(`- Rule: ${plan.hashtags.rule}`);
-    lines.push(`- Set A: ${plan.hashtags.setA.join(" ")}`);
-    lines.push(`- Set B: ${plan.hashtags.setB.join(" ")}`);
-    lines.push(``);
-    lines.push(`Weekly schedule example`);
-    plan.weeklyScheduleExample.forEach(x => {
-      lines.push(`- ${x.day}: ${x.type} • ${x.timeWindow} • ${x.note}`);
-    });
-    lines.push(``);
-    lines.push(`Measurement`);
-    lines.push(`- Primary metrics: ${plan.measurement.primaryMetrics.join(", ")}`);
-    lines.push(`- Weekly review: ${plan.measurement.weeklyReview}`);
+    lines.push(`CTA options`);
+    lines.push(`- Primary: ${plan.simplified.cta.primary}`);
+    lines.push(`- Alternates: ${plan.simplified.cta.alternates.join(" • ")}`);
     return lines.join("\n");
+  }
+
+  function shortLine(s){
+    return (s || "").replace(/\s+/g," ").trim().slice(0,140);
   }
 
   function copyOutput(){
@@ -1050,12 +1061,12 @@ Price:
 
   function exportJSON(){
     const plan = window.__lastPlan;
-    if (!plan){ toast("Generate a plan first"); return; }
+    if (!plan){ toast("Generate first"); return; }
     const blob = new Blob([JSON.stringify(plan, null, 2)], {type:"application/json"});
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${(plan.reference.product || "plan").replace(/\s+/g,"_").toLowerCase()}_marketing_plan.json`;
+    a.download = `${(plan.reference.product || "plan").replace(/\s+/g,"_").toLowerCase()}_plan.json`;
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -1063,5 +1074,81 @@ Price:
     toast("Exported JSON");
   }
 </script>
+
+<!--
+=========================================================
+Proxy endpoint needed for Scan URL colours
+=========================================================
+
+Because browsers can't fetch arbitrary sites due to CORS, you need a tiny backend.
+Simplest: Cloudflare Worker (no npm). Deploy, then set your frontend to call it.
+
+Worker (Cloudflare) example:
+
+export default {
+  async fetch(request) {
+    const url = new URL(request.url);
+    if (url.pathname !== "/api/palette") return new Response("Not found", { status: 404 });
+
+    const target = url.searchParams.get("url");
+    if (!target) return json({ error: "Missing url" }, 400);
+
+    // Fetch HTML (server-side, no CORS problem)
+    let html;
+    try {
+      const res = await fetch(target, { headers: { "User-Agent": "palette-bot/1.0" } });
+      html = await res.text();
+    } catch {
+      return json({ error: "Fetch failed" }, 400);
+    }
+
+    // Extract candidate colours from:
+    // - meta theme-color
+    // - inline CSS variables
+    // - common hex patterns
+    const hexes = Array.from(new Set(
+      (html.match(/#[0-9a-fA-F]{6}\b/g) || []).map(x => x.toLowerCase())
+    )).slice(0, 60);
+
+    // crude pick: first distinct colours
+    const pick = (i, fb) => hexes[i] || fb;
+
+    // choose a readable text colour (basic luminance check)
+    const primary = pick(0, "#7aa2ff");
+    const secondary = pick(1, "#2ee59d");
+    const bg = pick(2, "#0b0f19");
+
+    const text = isLight(bg) ? "#0b0f19" : "#e7eefc";
+
+    return json({
+      primary, secondary, bg, text,
+      extracted: hexes.slice(0, 12)
+    });
+  }
+};
+
+function json(obj, status = 200) {
+  return new Response(JSON.stringify(obj), {
+    status,
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "access-control-allow-origin": "*"
+    }
+  });
+}
+
+function isLight(hex) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  // relative luminance
+  const L = (0.2126*r + 0.7152*g + 0.0722*b) / 255;
+  return L > 0.6;
+}
+
+=========================================================
+If you host your frontend somewhere else:
+- Put the worker on https://your-worker-domain/api/palette
+- Change fetch() in scanPaletteFromURL() to that full URL.
+=========================================================
+-->
 </body>
 </html>
