@@ -1,0 +1,1067 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Short-Form Growth Tool (IG + TikTok)</title>
+  <style>
+    :root{
+      --bg: #0b0f19;
+      --panel: #121a2a;
+      --panel2:#0f1624;
+      --text:#e7eefc;
+      --muted:#a9b6d3;
+      --border: rgba(255,255,255,.10);
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --accent: #7aa2ff;
+      --accent2:#2ee59d;
+      --danger:#ff6b6b;
+      --warn:#ffd166;
+      --ok:#2ee59d;
+      --radius: 16px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: var(--sans);
+      background:
+        radial-gradient(1200px 600px at 10% 0%, rgba(122,162,255,.18), transparent 60%),
+        radial-gradient(900px 500px at 100% 10%, rgba(46,229,157,.14), transparent 55%),
+        var(--bg);
+      color:var(--text);
+    }
+
+    header{
+      position: sticky;
+      top:0;
+      z-index:5;
+      backdrop-filter: blur(10px);
+      background: rgba(11,15,25,.72);
+      border-bottom:1px solid var(--border);
+    }
+    .wrap{max-width:1200px;margin:0 auto;padding:18px 18px}
+    .topbar{
+      display:flex; gap:14px; align-items:center; justify-content:space-between;
+    }
+    .title{
+      display:flex; gap:12px; align-items:flex-start;
+    }
+    .badge{
+      font-family: var(--mono);
+      font-size:12px;
+      color:var(--muted);
+      border:1px solid var(--border);
+      padding:6px 10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.03);
+    }
+    h1{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.2px;
+      font-weight:700;
+      line-height:1.25;
+    }
+    .sub{
+      margin:3px 0 0;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.35;
+    }
+    .actions{display:flex;gap:10px;flex-wrap:wrap}
+    button{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      box-shadow:none;
+      transition: transform .06s ease, background .2s ease, border-color .2s ease;
+      font-weight:650;
+      font-size:13px;
+    }
+    button:hover{background: rgba(255,255,255,.07)}
+    button:active{transform: translateY(1px)}
+    .primary{
+      border-color: rgba(122,162,255,.45);
+      background: rgba(122,162,255,.14);
+    }
+    .primary:hover{background: rgba(122,162,255,.20)}
+    .ghost{background: transparent}
+    .danger{
+      border-color: rgba(255,107,107,.45);
+      background: rgba(255,107,107,.12);
+    }
+
+    main .grid{
+      display:grid;
+      grid-template-columns: 420px 1fr;
+      gap:16px;
+      padding:16px 18px 34px;
+      max-width:1200px;
+      margin:0 auto;
+    }
+    @media (max-width: 980px){
+      main .grid{grid-template-columns:1fr}
+    }
+
+    .card{
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card .hd{
+      padding:14px 14px 10px;
+      border-bottom:1px solid var(--border);
+      background: rgba(255,255,255,.02);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .card .hd h2{
+      margin:0;
+      font-size:13px;
+      letter-spacing:.2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-family: var(--mono);
+    }
+    .card .bd{padding:14px}
+    .row{display:flex;gap:10px}
+    .row > *{flex:1}
+
+    label{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      margin:10px 0 6px;
+    }
+    input[type="text"], input[type="url"], textarea, select{
+      width:100%;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      outline:none;
+      font-size:13px;
+    }
+    textarea{min-height:90px; resize: vertical; line-height:1.4}
+    .hint{
+      margin-top:6px;
+      font-size:11px;
+      color: rgba(169,182,211,.85);
+    }
+
+    .pillrow{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+    .pill{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      color:var(--text);
+      cursor:pointer;
+      user-select:none;
+    }
+    .pill.active{
+      border-color: rgba(46,229,157,.50);
+      background: rgba(46,229,157,.12);
+    }
+
+    .kpi{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:12px;
+    }
+    .kpi .box{
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.12);
+      border-radius:14px;
+      padding:10px 12px;
+    }
+    .kpi .box .t{font-size:11px;color:var(--muted);font-family:var(--mono);text-transform:uppercase}
+    .kpi .box .v{margin-top:6px;font-size:14px;font-weight:750}
+
+    .out{
+      white-space: pre-wrap;
+      font-family: var(--sans);
+      line-height: 1.5;
+      font-size: 13px;
+      color: var(--text);
+    }
+    .sectionTitle{
+      font-family: var(--mono);
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .2px;
+      font-size: 12px;
+      margin: 12px 0 6px;
+    }
+    .divider{height:1px;background: var(--border); margin: 12px 0}
+
+    .toast{
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 18px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(10px);
+      color: var(--text);
+      font-size: 12px;
+      display:none;
+      z-index: 10;
+    }
+
+    /* Live brand preview */
+    .brandPreview{
+      border:1px solid var(--border);
+      border-radius: 18px;
+      overflow:hidden;
+      background: rgba(0,0,0,.16);
+    }
+    .brandPreview .banner{
+      padding:14px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      color: rgba(0,0,0,.75);
+      font-weight: 900;
+      letter-spacing: .2px;
+    }
+    .brandPreview .content{
+      padding:14px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    .swatch{
+      border-radius: 14px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.02);
+    }
+    .swatch .dot{
+      width:14px;height:14px;border-radius:4px;display:inline-block;margin-right:8px;vertical-align:middle;
+      border:1px solid rgba(255,255,255,.25)
+    }
+    .swatch .txt{font-size:12px;color:var(--muted);font-family:var(--mono)}
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="title">
+        <div>
+          <h1>IG + TikTok Marketing Webtool</h1>
+          <div class="sub">Generates scripts, captions, shoot lists, and a posting schedule using your product + brand inputs.</div>
+        </div>
+        <div class="badge">v1 • local only</div>
+      </div>
+      <div class="actions">
+        <button class="ghost" id="btnLoad">Load sample</button>
+        <button class="ghost" id="btnExport">Export JSON</button>
+        <button class="ghost" id="btnCopy">Copy output</button>
+        <button class="danger" id="btnReset">Reset</button>
+        <button class="primary" id="btnGenerate">Generate plan</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="grid">
+
+    <!-- INPUTS -->
+    <section class="card">
+      <div class="hd">
+        <h2>Inputs</h2>
+        <div class="badge" id="savedState">Not saved</div>
+      </div>
+      <div class="bd">
+        <label>Website URL (used as reference point)</label>
+        <input id="siteUrl" type="url" placeholder="https://yourproduct.com" />
+
+        <label>Product name</label>
+        <input id="productName" type="text" placeholder="StatusMorning / OneMore / etc." />
+
+        <label>One-line value prop</label>
+        <input id="valueProp" type="text" placeholder="What you do + outcome + who for (plain language)" />
+
+        <label>Target customer (ICP)</label>
+        <input id="icp" type="text" placeholder="e.g., busy iPhone users who want X without Y" />
+
+        <label>Proof / credibility (optional)</label>
+        <textarea id="proof" placeholder="e.g., App Store rating, testimonials, numbers, screenshots, case study"></textarea>
+
+        <label>Product description (paste key copy from the site)</label>
+        <textarea id="productDesc" placeholder="Paste the most important sections: what it is, features, pricing, differentiators"></textarea>
+
+        <div class="divider"></div>
+
+        <label>Brand colours (hex)</label>
+        <div class="row">
+          <input id="brandPrimary" type="text" placeholder="#7aa2ff" />
+          <input id="brandSecondary" type="text" placeholder="#2ee59d" />
+        </div>
+        <div class="row">
+          <input id="brandBg" type="text" placeholder="#0b0f19" />
+          <input id="brandText" type="text" placeholder="#e7eefc" />
+        </div>
+        <div class="hint">Used for previews + exporting a consistent look. (In v1, this does not scrape your website automatically.)</div>
+
+        <label>Brand vibe</label>
+        <div class="pillrow" id="vibeRow"></div>
+
+        <label>Primary goal</label>
+        <select id="goal">
+          <option value="installs">App installs / conversions</option>
+          <option value="leads">Leads / signups</option>
+          <option value="awareness">Awareness</option>
+          <option value="community">Community / trust</option>
+        </select>
+
+        <label>Posting frequency</label>
+        <select id="freq">
+          <option value="3">3x per week</option>
+          <option value="5">5x per week</option>
+          <option value="7">Daily</option>
+        </select>
+
+        <label>Audience timezone</label>
+        <select id="tz">
+          <option value="Europe/London">Europe/London</option>
+          <option value="America/New_York">America/New_York</option>
+          <option value="America/Los_Angeles">America/Los_Angeles</option>
+          <option value="Australia/Sydney">Australia/Sydney</option>
+          <option value="Pacific/Auckland">Pacific/Auckland</option>
+        </select>
+
+        <div class="divider"></div>
+
+        <div class="brandPreview" id="brandPreview">
+          <div class="banner">Brand preview</div>
+          <div class="content">
+            <div class="swatch"><span class="dot" id="dotPrimary"></span><span class="txt" id="txtPrimary">Primary</span></div>
+            <div class="swatch"><span class="dot" id="dotSecondary"></span><span class="txt" id="txtSecondary">Secondary</span></div>
+            <div class="swatch"><span class="dot" id="dotBg"></span><span class="txt" id="txtBg">Background</span></div>
+            <div class="swatch"><span class="dot" id="dotText"></span><span class="txt" id="txtText">Text</span></div>
+          </div>
+        </div>
+
+        <div class="hint">Tip: the more specific the product description, the less generic the output.</div>
+      </div>
+    </section>
+
+    <!-- OUTPUT -->
+    <section class="card">
+      <div class="hd">
+        <h2>Output</h2>
+        <div class="badge" id="outputMeta">No plan generated</div>
+      </div>
+      <div class="bd">
+        <div class="kpi">
+          <div class="box">
+            <div class="t">Content mix</div>
+            <div class="v" id="kpiMix">—</div>
+          </div>
+          <div class="box">
+            <div class="t">Cadence</div>
+            <div class="v" id="kpiCadence">—</div>
+          </div>
+          <div class="box">
+            <div class="t">Primary hook style</div>
+            <div class="v" id="kpiHook">—</div>
+          </div>
+          <div class="box">
+            <div class="t">CTA pattern</div>
+            <div class="v" id="kpiCTA">—</div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="out" id="output"></div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // -----------------------------
+  // Lightweight local-state + generator
+  // -----------------------------
+
+  const VIBES = [
+    "Minimal", "Premium", "Playful", "Techy", "Clinical", "Bold",
+    "Warm", "No-nonsense", "Luxury", "Indie", "Energetic"
+  ];
+
+  const els = {
+    siteUrl: q("#siteUrl"),
+    productName: q("#productName"),
+    valueProp: q("#valueProp"),
+    icp: q("#icp"),
+    proof: q("#proof"),
+    productDesc: q("#productDesc"),
+    brandPrimary: q("#brandPrimary"),
+    brandSecondary: q("#brandSecondary"),
+    brandBg: q("#brandBg"),
+    brandText: q("#brandText"),
+    vibeRow: q("#vibeRow"),
+    goal: q("#goal"),
+    freq: q("#freq"),
+    tz: q("#tz"),
+    output: q("#output"),
+    outputMeta: q("#outputMeta"),
+    savedState: q("#savedState"),
+    toast: q("#toast"),
+    kpiMix: q("#kpiMix"),
+    kpiCadence: q("#kpiCadence"),
+    kpiHook: q("#kpiHook"),
+    kpiCTA: q("#kpiCTA"),
+    dotPrimary: q("#dotPrimary"),
+    dotSecondary: q("#dotSecondary"),
+    dotBg: q("#dotBg"),
+    dotText: q("#dotText"),
+    txtPrimary: q("#txtPrimary"),
+    txtSecondary: q("#txtSecondary"),
+    txtBg: q("#txtBg"),
+    txtText: q("#txtText"),
+    preview: q("#brandPreview")
+  };
+
+  const KEY = "sf_growth_tool_v1";
+
+  let selectedVibes = new Set(["Techy", "No-nonsense"]);
+
+  init();
+
+  function init(){
+    // Build vibe pills
+    els.vibeRow.innerHTML = "";
+    VIBES.forEach(v => {
+      const pill = document.createElement("div");
+      pill.className = "pill" + (selectedVibes.has(v) ? " active" : "");
+      pill.textContent = v;
+      pill.onclick = () => {
+        if (selectedVibes.has(v)) selectedVibes.delete(v);
+        else selectedVibes.add(v);
+        pill.classList.toggle("active");
+        saveState();
+      };
+      els.vibeRow.appendChild(pill);
+    });
+
+    // Wire buttons
+    q("#btnGenerate").onclick = () => generate();
+    q("#btnCopy").onclick = () => copyOutput();
+    q("#btnExport").onclick = () => exportJSON();
+    q("#btnReset").onclick = () => resetAll();
+    q("#btnLoad").onclick = () => loadSample();
+
+    // Auto-save on input changes
+    [
+      "siteUrl","productName","valueProp","icp","proof","productDesc",
+      "brandPrimary","brandSecondary","brandBg","brandText","goal","freq","tz"
+    ].forEach(id => q("#"+id).addEventListener("input", () => { saveState(); updatePreview(); }));
+
+    // Load saved state
+    loadState();
+    updatePreview();
+  }
+
+  function q(sel){ return document.querySelector(sel); }
+
+  function toast(msg){
+    els.toast.textContent = msg;
+    els.toast.style.display = "block";
+    clearTimeout(window.__toastTimer);
+    window.__toastTimer = setTimeout(() => els.toast.style.display = "none", 1600);
+  }
+
+  function sanitizeHex(x, fallback){
+    if (!x) return fallback;
+    const v = x.trim();
+    const ok = /^#([0-9a-fA-F]{6})$/.test(v);
+    return ok ? v : fallback;
+  }
+
+  function updatePreview(){
+    const primary = sanitizeHex(els.brandPrimary.value, "#7aa2ff");
+    const secondary = sanitizeHex(els.brandSecondary.value, "#2ee59d");
+    const bg = sanitizeHex(els.brandBg.value, "#0b0f19");
+    const text = sanitizeHex(els.brandText.value, "#e7eefc");
+
+    document.documentElement.style.setProperty("--accent", primary);
+    document.documentElement.style.setProperty("--accent2", secondary);
+    document.documentElement.style.setProperty("--bg", bg);
+    document.documentElement.style.setProperty("--text", text);
+
+    els.dotPrimary.style.background = primary;
+    els.dotSecondary.style.background = secondary;
+    els.dotBg.style.background = bg;
+    els.dotText.style.background = text;
+
+    els.txtPrimary.textContent = `Primary ${primary}`;
+    els.txtSecondary.textContent = `Secondary ${secondary}`;
+    els.txtBg.textContent = `Background ${bg}`;
+    els.txtText.textContent = `Text ${text}`;
+  }
+
+  function saveState(){
+    const state = collectInputs();
+    localStorage.setItem(KEY, JSON.stringify(state));
+    els.savedState.textContent = "Saved locally";
+  }
+
+  function loadState(){
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return;
+    try{
+      const s = JSON.parse(raw);
+      setInputs(s);
+      if (Array.isArray(s.vibes)) selectedVibes = new Set(s.vibes);
+      // Refresh vibe pills active states
+      [...els.vibeRow.children].forEach(p => {
+        p.classList.toggle("active", selectedVibes.has(p.textContent));
+      });
+      els.savedState.textContent = "Loaded";
+    }catch{
+      // ignore
+    }
+  }
+
+  function resetAll(){
+    localStorage.removeItem(KEY);
+    selectedVibes = new Set(["Techy","No-nonsense"]);
+    location.reload();
+  }
+
+  function loadSample(){
+    const sample = {
+      siteUrl: "https://example.com",
+      productName: "StatusMorning",
+      valueProp: "A morning dashboard for service status + news, so you know what’s broken before your day starts.",
+      icp: "iPhone users who rely on Apple/Microsoft/PS/Xbox services and want a fast, clean snapshot.",
+      proof: "Early users: “I check it before work.” Simple UI. Fast load. No clutter.",
+      productDesc:
+`Features:
+- Service status cards (Apple, Apple Dev, Microsoft, PlayStation, Xbox)
+- News feeds (UK + NZ + tech) with thumbnails and dedupe
+- Optional shower timer feature
+
+Differentiators:
+- One screen, low friction
+- Looks like a system dashboard, not a news app
+
+Price:
+- Free / ad-supported (future: pro tier)`,
+      brandPrimary: "#7aa2ff",
+      brandSecondary: "#2ee59d",
+      brandBg: "#0b0f19",
+      brandText: "#e7eefc",
+      goal: "installs",
+      freq: "5",
+      tz: "Europe/London",
+      vibes: ["Techy","Minimal","No-nonsense"]
+    };
+    selectedVibes = new Set(sample.vibes);
+    setInputs(sample);
+    // update vibe pills
+    [...els.vibeRow.children].forEach(p => p.classList.toggle("active", selectedVibes.has(p.textContent)));
+    saveState();
+    updatePreview();
+    toast("Loaded sample");
+  }
+
+  function collectInputs(){
+    return {
+      siteUrl: els.siteUrl.value.trim(),
+      productName: els.productName.value.trim(),
+      valueProp: els.valueProp.value.trim(),
+      icp: els.icp.value.trim(),
+      proof: els.proof.value.trim(),
+      productDesc: els.productDesc.value.trim(),
+      brandPrimary: els.brandPrimary.value.trim(),
+      brandSecondary: els.brandSecondary.value.trim(),
+      brandBg: els.brandBg.value.trim(),
+      brandText: els.brandText.value.trim(),
+      goal: els.goal.value,
+      freq: els.freq.value,
+      tz: els.tz.value,
+      vibes: [...selectedVibes]
+    };
+  }
+
+  function setInputs(s){
+    els.siteUrl.value = s.siteUrl ?? "";
+    els.productName.value = s.productName ?? "";
+    els.valueProp.value = s.valueProp ?? "";
+    els.icp.value = s.icp ?? "";
+    els.proof.value = s.proof ?? "";
+    els.productDesc.value = s.productDesc ?? "";
+    els.brandPrimary.value = s.brandPrimary ?? "";
+    els.brandSecondary.value = s.brandSecondary ?? "";
+    els.brandBg.value = s.brandBg ?? "";
+    els.brandText.value = s.brandText ?? "";
+    els.goal.value = s.goal ?? "installs";
+    els.freq.value = s.freq ?? "5";
+    els.tz.value = s.tz ?? "Europe/London";
+  }
+
+  // -----------------------------
+  // Generator logic (practical heuristics)
+  // -----------------------------
+
+  function generate(){
+    const s = collectInputs();
+    const missing = [];
+    if (!s.productName) missing.push("Product name");
+    if (!s.valueProp) missing.push("Value prop");
+    if (!s.icp) missing.push("Target customer (ICP)");
+    if (!s.productDesc) missing.push("Product description");
+    if (missing.length){
+      toast("Missing: " + missing.join(", "));
+      return;
+    }
+
+    // Basic positioning
+    const positioning = {
+      who: s.icp,
+      outcome: s.valueProp,
+      proof: s.proof || "Add proof (rating, numbers, testimonials, demo footage).",
+      objections: inferObjections(s),
+      angle: pickPrimaryAngle(s)
+    };
+
+    // Platform tactics (stable, non-gimmicky)
+    const mix = contentMix(s.goal);
+    const cadence = cadencePlan(parseInt(s.freq,10));
+    const times = recommendedTimes(s.tz);
+
+    // Creative system
+    const hooks = hookBank(positioning, s);
+    const ctas = ctaBank(s.goal);
+    const scripts = buildScripts(positioning, hooks, ctas, s);
+    const carousels = buildCarousels(positioning, hooks, ctas, s);
+    const captions = buildCaptions(positioning, hooks, ctas, s);
+    const shoot = shootList(positioning, s);
+
+    // KPIs
+    els.kpiMix.textContent = mix.label;
+    els.kpiCadence.textContent = `${cadence.postsPerWeek} posts/week • ${cadence.reelsPerWeek} short-form videos`;
+    els.kpiHook.textContent = positioning.angle.hookStyle;
+    els.kpiCTA.textContent = ctas.primary;
+
+    // Output formatting
+    const plan = {
+      reference: { website: s.siteUrl || "(not provided)", product: s.productName },
+      brand: {
+        vibes: s.vibes,
+        colors: {
+          primary: sanitizeHex(s.brandPrimary, "#7aa2ff"),
+          secondary: sanitizeHex(s.brandSecondary, "#2ee59d"),
+          background: sanitizeHex(s.brandBg, "#0b0f19"),
+          text: sanitizeHex(s.brandText, "#e7eefc")
+        }
+      },
+      positioning,
+      platform: {
+        contentMix: mix,
+        cadence,
+        recommendedTimesLocal: times,
+        doThisNotThat: [
+          "Do: 1 clear idea per video. Not: feature dumps.",
+          "Do: show the UI in the first 1–2 seconds. Not: long intros.",
+          "Do: captions on screen. Not: relying on audio only.",
+          "Do: series content (Part 1/2/3). Not: one-offs only.",
+          "Do: ship, measure, iterate weekly. Not: waiting for 'perfect'."
+        ]
+      },
+      assetsToCreate: shoot,
+      scripts,
+      carousels,
+      captions,
+      hashtags: hashtagSets(s),
+      weeklyScheduleExample: weeklyScheduleExample(cadence, times),
+      measurement: measurementBlock(s.goal)
+    };
+
+    window.__lastPlan = plan;
+    els.outputMeta.textContent = `Generated ${new Date().toLocaleString()} • ${s.productName}`;
+    els.output.textContent = renderPlan(plan);
+    saveState();
+    toast("Plan generated");
+  }
+
+  function inferObjections(s){
+    const text = (s.productDesc + " " + s.valueProp).toLowerCase();
+    const out = [];
+    if (!/free|trial|price|£|\$/.test(text)) out.push("“How much does it cost / is it worth it?”");
+    if (!/privacy|offline|secure|local/.test(text)) out.push("“Does this track me / what data do you collect?”");
+    out.push("“Why this instead of what I already use?”");
+    out.push("“Will it actually save me time?”");
+    return out.slice(0,4);
+  }
+
+  function pickPrimaryAngle(s){
+    // Choose one dominant creative angle to keep the feed consistent.
+    const goal = s.goal;
+    const vibe = [...selectedVibes].join(" ");
+    let hookStyle = "Problem → Fix (fast demo)";
+    if (goal === "community") hookStyle = "Behind-the-scenes + building in public";
+    if (/premium|luxury/i.test(vibe)) hookStyle = "Aesthetic demo + minimal copy";
+    if (/playful|energetic/i.test(vibe)) hookStyle = "Pattern-interrupt + quick cuts";
+    return {
+      hookStyle,
+      promise: s.valueProp,
+      seriesIdea: "“30 seconds to…” weekly series"
+    };
+  }
+
+  function contentMix(goal){
+    // stable mix that works across IG + TikTok for most products
+    const base = {
+      reels: 0.6,
+      carousels: 0.25,
+      stories: 0.15
+    };
+    if (goal === "awareness") return { ...base, label: "60% short-form • 25% carousels • 15% stories" };
+    if (goal === "installs") return { ...base, reels: 0.7, carousels: 0.2, stories: 0.1, label: "70% short-form • 20% carousels • 10% stories" };
+    if (goal === "leads") return { ...base, reels: 0.55, carousels: 0.3, stories: 0.15, label: "55% short-form • 30% carousels • 15% stories" };
+    return { ...base, label: "60% short-form • 25% carousels • 15% stories" };
+  }
+
+  function cadencePlan(postsPerWeek){
+    // Map to an output users can execute.
+    const reelsPerWeek = Math.max(2, Math.round(postsPerWeek * 0.6));
+    const carouselPerWeek = Math.max(1, postsPerWeek - reelsPerWeek);
+    return {
+      postsPerWeek,
+      reelsPerWeek,
+      carouselPerWeek,
+      storyDaysPerWeek: Math.min(7, Math.max(3, postsPerWeek)),
+      rule: "Batch-create 1x per week. Post consistently for 4 weeks before changing strategy."
+    };
+  }
+
+  function recommendedTimes(tz){
+    // Generic “safe” windows; real optimisation requires analytics.
+    return {
+      timezone: tz,
+      windows: [
+        { label: "Morning commute", time: "07:30–09:00" },
+        { label: "Lunch", time: "12:00–13:30" },
+        { label: "Evening", time: "18:30–21:00" }
+      ],
+      note: "Start with these windows; after 14 days, shift to your top-performing hour."
+    };
+  }
+
+  function hookBank(pos, s){
+    const p = s.productName;
+    const who = s.icp;
+    const promise = s.valueProp;
+    return [
+      `If you’re ${who}, stop doing this the hard way…`,
+      `This is how I fixed "${extractProblem(promise)}" in 15 seconds.`,
+      `3 things I wish I had before I started using ${p}.`,
+      `I built ${p} because I got tired of "${extractProblem(promise)}".`,
+      `Watch this before you waste another morning.`,
+      `POV: you open your phone and instantly know what’s broken today.`
+    ];
+  }
+
+  function extractProblem(valueProp){
+    const v = valueProp.replace(/\s+/g," ").trim();
+    // crude: take first clause as "problem"
+    const parts = v.split(/,| so | so you | which | that /i);
+    return (parts[0] || v).slice(0,80);
+  }
+
+  function ctaBank(goal){
+    if (goal === "installs") return {
+      primary: "Comment “LINK” and I’ll reply / link in bio",
+      alternates: ["Grab it from the link in bio", "Search the app name and try it today", "Save this and test it tomorrow morning"]
+    };
+    if (goal === "leads") return {
+      primary: "DM “INFO” for the checklist / template",
+      alternates: ["Comment “GUIDE” and I’ll send it", "Join the waitlist (link in bio)", "Save + share to someone who needs this"]
+    };
+    if (goal === "community") return {
+      primary: "Follow for part 2 / weekly builds",
+      alternates: ["Comment what you want next", "Vote in the poll on my story", "Send a bug/feature idea in DMs"]
+    };
+    return {
+      primary: "Follow for more + save this",
+      alternates: ["Share to a friend", "Comment your biggest pain point", "Link in bio"]
+    };
+  }
+
+  function buildScripts(pos, hooks, ctas, s){
+    const p = s.productName;
+    const series = pos.angle.seriesIdea;
+
+    const templates = [
+      {
+        title: "15s Fast Demo (most reliable)",
+        beats: [
+          "0–1s: Hook on-screen (big text)",
+          "1–3s: Show the problem in one shot",
+          "3–12s: Screen recording of the fix (no fluff)",
+          "12–15s: Result + CTA"
+        ],
+        script: (hook) => [
+          `ON-SCREEN: ${hook}`,
+          `VOICE: "${shortLine(s.valueProp)}"`,
+          `SHOW: 2–3 taps demonstrating ${p}`,
+          `ON-SCREEN: Result in one line (time saved / clarity / outcome)`,
+          `CTA: ${ctas.primary}`
+        ].join("\n")
+      },
+      {
+        title: "Problem → Myth → Truth (30s)",
+        beats: [
+          "0–2s: Hook",
+          "2–10s: Myth people believe",
+          "10–25s: Truth + demo",
+          "25–30s: CTA"
+        ],
+        script: (hook) => [
+          `HOOK: ${hook}`,
+          `MYTH: "Most people think they need X… but that’s why it stays annoying."`,
+          `TRUTH: "${shortLine(s.valueProp)}"`,
+          `DEMO: show 1 feature that proves it`,
+          `CTA: ${ctas.primary}`
+        ].join("\n")
+      },
+      {
+        title: `Series format: ${series}`,
+        beats: [
+          "0–2s: Title card: “30 seconds to …”",
+          "2–22s: One tip/feature",
+          "22–30s: Next episode tease + CTA"
+        ],
+        script: (hook) => [
+          `TITLE: "${series}"`,
+          `TODAY: ${shortLine(s.valueProp)}`,
+          `SHOW: one repeatable use-case for ${p}`,
+          `NEXT: "Next: how to handle [big objection]"`,
+          `CTA: ${ctas.primary}`
+        ].join("\n")
+      }
+    ];
+
+    return templates.map((t, idx) => ({
+      id: `V${idx+1}`,
+      title: t.title,
+      beats: t.beats,
+      exampleScript: t.script(hooks[idx % hooks.length]),
+      filmingNotes: [
+        "Use captions. Keep text within safe margins.",
+        "Front-load the UI/result in the first 2 seconds.",
+        "Use one strong visual per beat. No B-roll filler."
+      ]
+    }));
+  }
+
+  function buildCarousels(pos, hooks, ctas, s){
+    const p = s.productName;
+    const slides = [
+      {
+        title: "Carousel: “Stop doing this”",
+        outline: [
+          `Slide 1: Big claim (hook)`,
+          `Slide 2: The common mistake`,
+          `Slide 3: The cost of the mistake`,
+          `Slide 4: The simple fix (introduce ${p})`,
+          `Slide 5: 3 bullets: how it works`,
+          `Slide 6: Proof`,
+          `Slide 7: CTA (${ctas.primary})`
+        ]
+      },
+      {
+        title: "Carousel: “Checklist / framework”",
+        outline: [
+          "Slide 1: Title: 5-step checklist",
+          "Slides 2–6: One step per slide",
+          `Slide 7: “If you want this automated, use ${p}” + CTA`
+        ]
+      }
+    ];
+    return slides;
+  }
+
+  function buildCaptions(pos, hooks, ctas, s){
+    const p = s.productName;
+    const proof = s.proof ? `Proof: ${shortLine(s.proof)}` : "Proof: add a testimonial, rating, or number.";
+    const set = [
+      `${hooks[0]}\n\n${shortLine(s.valueProp)}\n\n${proof}\n\n${ctas.primary}`,
+      `What changed for me:\n- 1 clear screen\n- less messing around\n- faster decisions\n\nIf you want the same: ${ctas.primary}`,
+      `If you’ve ever thought “${pos.objections[2]}” — fair.\n\nHere’s the difference: ${shortLine(s.valueProp)}\n\n${ctas.primary}`
+    ];
+    return set.map((c, i) => ({ id: `C${i+1}`, caption: c }));
+  }
+
+  function hashtagSets(s){
+    // Avoid spam. Keep to 5–12 max, mix broad + niche.
+    const p = s.productName.toLowerCase().replace(/\s+/g,"");
+    const base = ["#app", "#ios", "#productivity", "#buildinpublic", "#startup"];
+    const niche = s.goal === "installs"
+      ? ["#appstore", "#iphoneapps", "#indiedev"]
+      : ["#marketing", "#contentstrategy", "#socialmediamarketing"];
+    return {
+      rule: "Use 5–12. Rotate weekly. Prioritise relevance over volume.",
+      setA: [...base, ...niche, `#${p}`].slice(0,10),
+      setB: ["#shortform", "#reels", "#tiktokmarketing", "#uxdesign", "#saas", `#${p}`].slice(0,10)
+    };
+  }
+
+  function shootList(pos, s){
+    const p = s.productName;
+    return [
+      "10–15 screen recordings of the core flow (each 5–12s)",
+      "3 clips: you speaking (front camera) delivering hooks",
+      "2 clips: reaction shots / ‘POV’ setups",
+      `5 screenshots with consistent overlay style (headline + 2 bullets)`,
+      `1 “origin story” clip: why ${p} exists (20–30s)`,
+      "1 proof asset: review, stat, quote, or demo scenario"
+    ];
+  }
+
+  function weeklyScheduleExample(cadence, times){
+    const w = times.windows.map(x => `${x.label} (${x.time})`).join(", ");
+    const n = cadence.postsPerWeek;
+    const days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+    const chosen = days.slice(0, n);
+    return chosen.map((d, i) => ({
+      day: d,
+      type: (i % 3 === 0) ? "Short-form video" : (i % 3 === 1 ? "Short-form video" : "Carousel"),
+      timeWindow: times.windows[i % times.windows.length].time,
+      note: "Pin the top comment with the CTA. Reply fast for the first hour."
+    }));
+  }
+
+  function measurementBlock(goal){
+    if (goal === "installs") return {
+      primaryMetrics: ["Profile visits → link clicks", "Installs / day", "Hold rate (3s)", "Avg watch time", "Saves"],
+      weeklyReview: "Keep winners: top 20% by watch time and saves. Re-make them with new hooks."
+    };
+    if (goal === "leads") return {
+      primaryMetrics: ["DMs / comments with keyword", "Landing page conversion", "Cost per lead (if ads)", "Saves"],
+      weeklyReview: "Double down on formats that generate keywords/DMs. Tighten the CTA."
+    };
+    return {
+      primaryMetrics: ["Watch time", "Shares", "Saves", "Follower growth"],
+      weeklyReview: "Turn top posts into a series. Keep the first 2 seconds aggressive."
+    };
+  }
+
+  function shortLine(s){
+    return (s || "").replace(/\s+/g," ").trim().slice(0,140);
+  }
+
+  function renderPlan(plan){
+    const lines = [];
+    lines.push(`Reference`);
+    lines.push(`- Website: ${plan.reference.website}`);
+    lines.push(`- Product: ${plan.reference.product}`);
+    lines.push(``);
+    lines.push(`Brand`);
+    lines.push(`- Vibes: ${plan.brand.vibes.join(", ") || "(none)"}`);
+    lines.push(`- Colours: primary ${plan.brand.colors.primary}, secondary ${plan.brand.colors.secondary}, bg ${plan.brand.colors.background}, text ${plan.brand.colors.text}`);
+    lines.push(``);
+    lines.push(`Positioning`);
+    lines.push(`- Who: ${plan.positioning.who}`);
+    lines.push(`- Promise: ${plan.positioning.outcome}`);
+    lines.push(`- Proof: ${plan.positioning.proof}`);
+    lines.push(`- Likely objections:`);
+    plan.positioning.objections.forEach(x => lines.push(`  - ${x}`));
+    lines.push(`- Primary hook style: ${plan.positioning.angle.hookStyle}`);
+    lines.push(``);
+    lines.push(`Platform plan (IG + TikTok)`);
+    lines.push(`- Content mix: ${plan.platform.contentMix.label}`);
+    lines.push(`- Cadence: ${plan.platform.cadence.postsPerWeek}/week (${plan.platform.cadence.reelsPerWeek} videos, ${plan.platform.cadence.carouselPerWeek} carousels)`);
+    lines.push(`- Time windows (${plan.platform.recommendedTimesLocal.timezone}):`);
+    plan.platform.recommendedTimesLocal.windows.forEach(w => lines.push(`  - ${w.label}: ${w.time}`));
+    lines.push(`- Rules: ${plan.platform.cadence.rule}`);
+    lines.push(``);
+    lines.push(`Do / Don’t`);
+    plan.platform.doThisNotThat.forEach(x => lines.push(`- ${x}`));
+    lines.push(``);
+    lines.push(`Assets to create (batch weekly)`);
+    plan.assetsToCreate.forEach(x => lines.push(`- ${x}`));
+    lines.push(``);
+    lines.push(`Short-form scripts`);
+    plan.scripts.forEach(s => {
+      lines.push(``);
+      lines.push(`${s.id} • ${s.title}`);
+      s.beats.forEach(b => lines.push(`- ${b}`));
+      lines.push(`Example script:\n${s.exampleScript}`);
+    });
+    lines.push(``);
+    lines.push(`Carousels`);
+    plan.carousels.forEach(c => {
+      lines.push(`- ${c.title}`);
+      c.outline.forEach(o => lines.push(`  - ${o}`));
+    });
+    lines.push(``);
+    lines.push(`Captions`);
+    plan.captions.forEach(c => {
+      lines.push(``);
+      lines.push(`${c.id}`);
+      lines.push(c.caption);
+    });
+    lines.push(``);
+    lines.push(`Hashtags`);
+    lines.push(`- Rule: ${plan.hashtags.rule}`);
+    lines.push(`- Set A: ${plan.hashtags.setA.join(" ")}`);
+    lines.push(`- Set B: ${plan.hashtags.setB.join(" ")}`);
+    lines.push(``);
+    lines.push(`Weekly schedule example`);
+    plan.weeklyScheduleExample.forEach(x => {
+      lines.push(`- ${x.day}: ${x.type} • ${x.timeWindow} • ${x.note}`);
+    });
+    lines.push(``);
+    lines.push(`Measurement`);
+    lines.push(`- Primary metrics: ${plan.measurement.primaryMetrics.join(", ")}`);
+    lines.push(`- Weekly review: ${plan.measurement.weeklyReview}`);
+    return lines.join("\n");
+  }
+
+  function copyOutput(){
+    const text = els.output.textContent || "";
+    if (!text){ toast("Nothing to copy"); return; }
+    navigator.clipboard.writeText(text).then(() => toast("Copied"));
+  }
+
+  function exportJSON(){
+    const plan = window.__lastPlan;
+    if (!plan){ toast("Generate a plan first"); return; }
+    const blob = new Blob([JSON.stringify(plan, null, 2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${(plan.reference.product || "plan").replace(/\s+/g,"_").toLowerCase()}_marketing_plan.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    toast("Exported JSON");
+  }
+</script>
+</body>
+</html>
